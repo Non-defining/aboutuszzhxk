@@ -1,0 +1,5486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 · 开屏</title>
+    <!-- 引入 Noto Serif SC 字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== 全局字体 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', serif !important;
+        }
+
+        /* ===== 色卡变量 ===== */
+        :root {
+            --color-1: #D6E2F0;  /* 极浅蓝灰 */
+            --color-2: #ACD1EE;  /* 柔和天蓝 */
+            --color-3: #80B2E5;  /* 中蓝 */
+            --color-4: #FCE1F0;  /* 浅粉 */
+            --color-5: #F8C2DA;  /* 玫瑰粉 */
+        }
+
+        /* ===== 开屏容器 ===== */
+        #splash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, var(--color-1) 0%, var(--color-4) 50%, var(--color-2) 100%);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #splash.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* ===== 顶部装饰 ===== */
+        .deco-top {
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            color: var(--color-3);
+            margin-bottom: 1.5rem;
+            opacity: 0.75;
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        /* ===== 打字机区域 ===== */
+        .typewriter-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 6rem;
+            margin-bottom: 1rem;
+        }
+
+        .typewriter {
+            font-size: 5.5rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--color-5);
+            text-shadow:
+                0 0 10px rgba(248, 194, 218, 0.8),
+                0 0 30px rgba(248, 194, 218, 0.5),
+                0 0 60px rgba(172, 209, 238, 0.4),
+                0 0 100px rgba(128, 178, 229, 0.3);
+            animation: glowPulse 3s ease-in-out infinite;
+            white-space: nowrap;
+        }
+
+        /* 光标 */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 5rem;
+            background: var(--color-5);
+            margin-left: 0.15em;
+            vertical-align: middle;
+            box-shadow: 0 0 8px var(--color-5), 0 0 20px var(--color-5);
+            animation: blink 0.9s step-end infinite;
+        }
+
+        /* ===== 底部装饰 ===== */
+        .deco-bottom {
+            font-size: 0.95rem;
+            letter-spacing: 0.2em;
+            color: var(--color-3);
+            margin-top: 0.5rem;
+            opacity: 0.7;
+            animation: breathe 5s ease-in-out infinite;
+        }
+
+        /* ===== 分割线 ===== */
+        .divider {
+            font-size: 0.9rem;
+            color: var(--color-3);
+            letter-spacing: 0.1em;
+            margin: 1.2rem 0;
+            opacity: 0.6;
+            white-space: nowrap;
+        }
+
+        /* ===== 按钮 ===== */
+        .enter-btn {
+            margin-top: 1.8rem;
+            padding: 0.8rem 2.8rem;
+            font-size: 1.15rem;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            color: #fff;
+            background: linear-gradient(135deg, var(--color-3), var(--color-5));
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow:
+                0 0 15px rgba(128, 178, 229, 0.5),
+                0 0 30px rgba(248, 194, 218, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: breathe 3.5s ease-in-out infinite;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow:
+                0 0 25px rgba(128, 178, 229, 0.8),
+                0 0 50px rgba(248, 194, 218, 0.6);
+        }
+
+        .enter-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== 主内容界面（点击后进入） ===== */
+        #main {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(160deg, var(--color-1), var(--color-2));
+            padding: 2rem;
+            text-align: center;
+        }
+
+        #main h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: var(--color-3);
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(172, 209, 238, 0.5);
+        }
+
+        #main p {
+            font-size: 1.15rem;
+            color: #5a6a7a;
+            line-height: 2;
+            max-width: 600px;
+            font-weight: 300;
+        }
+
+        /* ===== 动画 ===== */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                text-shadow:
+                    0 0 10px rgba(248, 194, 218, 0.8),
+                    0 0 30px rgba(248, 194, 218, 0.5),
+                    0 0 60px rgba(172, 209, 238, 0.4),
+                    0 0 100px rgba(128, 178, 229, 0.3);
+            }
+            50% {
+                text-shadow:
+                    0 0 18px rgba(248, 194, 218, 1),
+                    0 0 45px rgba(248, 194, 218, 0.7),
+                    0 0 90px rgba(172, 209, 238, 0.6),
+                    0 0 140px rgba(128, 178, 229, 0.5);
+            }
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.65; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 600px) {
+            .typewriter { font-size: 3.2rem; }
+            .cursor { height: 3rem; }
+            .divider { font-size: 0.7rem; }
+            .deco-top, .deco-bottom { font-size: 0.85rem; }
+            .enter-btn { padding: 0.7rem 2rem; font-size: 1rem; }
+            #main h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 开屏 ==================== -->
+    <div id="splash">
+        <!-- 顶部英文装饰 -->
+        <div class="deco-top">· ✦ · WELCOME TO OUR WORLD · ✦ ·</div>
+
+        <!-- 分割线 -->
+        <div class="divider">—————·★₊˚☾.˖ ♥︎ ·˖✶—————</div>
+
+        <!-- 打字机 -->
+        <div class="typewriter-wrap">
+            <span class="typewriter" id="typewriter"></span>
+            <span class="cursor"></span>
+        </div>
+
+        <!-- 底部分割线 -->
+        <div class="divider">—————— ฅ՞••՞ฅ︎ ——————</div>
+
+        <!-- 底部英文装饰 -->
+        <div class="deco-bottom">˖˚✧ ABOUT US ✧˚˖</div>
+
+        <!-- 进入按钮 -->
+        <button class="enter-btn" id="enterBtn">进 入</button>
+    </div>
+
+    <!-- ==================== 主内容 ==================== -->
+    <div id="main" style="display:none;">
+        <h1>这里是下一个界面</h1>
+        <p>
+            你可以在这里放置公司的介绍、产品展示、团队成员等内容。<br>
+            把这段文字替换成你自己的内容就好啦 ✨
+        </p>
+    </div>
+
+    <script>
+        // ========== 打字机逻辑 ==========
+        const text = '关于我们';
+        const typeEl = document.getElementById('typewriter');
+
+        // 打字速度（毫秒）
+        const TYPE_SPEED = 750;
+        const DELETE_SPEED = 400;
+        const PAUSE_AFTER_TYPE = 1600;   // 全部打出后停留
+        const PAUSE_AFTER_DELETE = 600;  // 全部删除后停留
+
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function tick() {
+            if (!isDeleting) {
+                // ---- 打字阶段 ----
+                charIndex++;
+                typeEl.textContent = text.slice(0, charIndex);
+
+                if (charIndex === text.length) {
+                    // 打完了，停留后开始删除
+                    isDeleting = true;
+                    setTimeout(tick, PAUSE_AFTER_TYPE);
+                    return;
+                }
+                setTimeout(tick, TYPE_SPEED);
+            } else {
+                // ---- 删除阶段 ----
+                charIndex--;
+                typeEl.textContent = text.slice(0, charIndex);
+
+                if (charIndex === 0) {
+                    // 删完了，停留后重新打字
+                    isDeleting = false;
+                    setTimeout(tick, PAUSE_AFTER_DELETE);
+                    return;
+                }
+                setTimeout(tick, DELETE_SPEED);
+            }
+        }
+
+        // 启动
+        setTimeout(tick, 600);
+
+        // ========== 进入按钮 ==========
+        const splash = document.getElementById('splash');
+        const main = document.getElementById('main');
+        const enterBtn = document.getElementById('enterBtn');
+
+        enterBtn.addEventListener('click', () => {
+            splash.classList.add('hide');
+            main.style.display = 'flex';
+            // 等开屏淡出后彻底移除，避免遮挡
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 850);
+        });
+    </script>
+<!-- ===== 返回按钮补丁 ===== -->
+<style>
+    /* 返回按钮 */
+    .back-btn {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 10000;
+        padding: 0.55rem 1.6rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        color: var(--color-3);
+        background: rgba(255, 255, 255, 0.6);
+        border: 1.5px solid var(--color-3);
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .back-btn:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(128, 178, 229, 0.6);
+        transform: translateX(-3px);
+    }
+
+    .back-btn:active {
+        transform: scale(0.95);
+    }
+
+    @media (max-width: 600px) {
+        .back-btn {
+            top: 1rem;
+            left: 1rem;
+            padding: 0.45rem 1.2rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<button class="back-btn" id="backBtn">← 返 回</button>
+
+<script>
+(function () {
+    var splash  = document.getElementById('splash');
+    var main    = document.getElementById('main');
+    var backBtn = document.getElementById('backBtn');
+    var enterBtn = document.getElementById('enterBtn');
+
+    // 开屏进入主界面时，显示返回按钮
+    if (enterBtn) {
+        enterBtn.addEventListener('click', function () {
+            backBtn.classList.add('show');
+        });
+    }
+
+    // 点返回：回到开屏，隐藏返回按钮，并重播打字机
+    backBtn.addEventListener('click', function () {
+        // 隐藏主界面（还原成原来的 display 控制方式）
+        if (main) main.style.display = 'none';
+
+        // 显示开屏
+        if (splash) {
+            splash.classList.remove('hide');
+            splash.style.display = '';
+        }
+
+        // 隐藏返回按钮
+        backBtn.classList.remove('show');
+
+        // 重新触发打字机（调用原页面里的 startTyping 或重置逻辑）
+        if (typeof startTyping === 'function') {
+            startTyping();
+        } else if (typeof tick === 'function') {
+            // 兼容没有 startTyping 的情况
+            clearTimeout(window.timerId);
+            window.charIndex = 0;
+            window.isDeleting = false;
+            document.getElementById('typewriter').textContent = '';
+            setTimeout(tick, 600);
+        }
+    });
+})();
+</script>
+<!-- ===== 第二页：目录页补丁 ===== -->
+<style>
+    /* ---------- 目录页容器 ---------- */
+    #catalog {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5rem 2rem 3rem;
+        background: linear-gradient(150deg, var(--color-4) 0%, var(--color-1) 45%, var(--color-2) 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.8s ease, visibility 0.8s ease;
+        overflow-y: auto;
+    }
+
+    #catalog.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* ---------- 目录标题 ---------- */
+    .catalog-title {
+        font-size: 2.6rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        color: var(--color-3);
+        margin-bottom: 0.6rem;
+        text-shadow: 0 0 24px rgba(172, 209, 238, 0.6);
+        animation: breathe 4s ease-in-out infinite;
+    }
+
+    .catalog-sub {
+        font-size: 0.95rem;
+        letter-spacing: 0.28em;
+        color: var(--color-5);
+        margin-bottom: 1.4rem;
+        opacity: 0.85;
+    }
+
+    .catalog-deco {
+        font-size: 0.9rem;
+        color: var(--color-3);
+        letter-spacing: 0.1em;
+        margin-bottom: 2rem;
+        opacity: 0.65;
+        white-space: nowrap;
+    }
+
+    /* ---------- 目录列表 ---------- */
+    .catalog-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        width: min(560px, 88vw);
+    }
+
+    .catalog-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.05rem 1.6rem;
+        font-size: 1.15rem;
+        letter-spacing: 0.12em;
+        color: #4a5a6a;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1.5px solid rgba(128, 178, 229, 0.45);
+        border-radius: 16px;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        transition: transform 0.28s ease, box-shadow 0.28s ease,
+                    background 0.28s ease, color 0.28s ease;
+        overflow: hidden;
+    }
+
+    .catalog-item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, var(--color-2), var(--color-5));
+        opacity: 0;
+        transition: opacity 0.28s ease;
+        z-index: -1;
+    }
+
+    .catalog-item:hover {
+        transform: translateX(6px) scale(1.015);
+        color: #fff;
+        border-color: var(--color-5);
+        box-shadow: 0 0 22px rgba(248, 194, 218, 0.55),
+                    0 0 40px rgba(128, 178, 229, 0.35);
+    }
+
+    .catalog-item:hover::before {
+        opacity: 1;
+    }
+
+    .catalog-item:active {
+        transform: scale(0.98);
+    }
+
+    .catalog-item .arrow {
+        font-size: 1rem;
+        opacity: 0.6;
+        transition: transform 0.28s ease, opacity 0.28s ease;
+    }
+
+    .catalog-item:hover .arrow {
+        opacity: 1;
+        transform: translateX(5px);
+    }
+
+    /* 每个目录项轻微错开入场（可选） */
+    .catalog-item:nth-child(1) { animation-delay: 0.05s; }
+    .catalog-item:nth-child(2) { animation-delay: 0.10s; }
+    .catalog-item:nth-child(3) { animation-delay: 0.15s; }
+    .catalog-item:nth-child(4) { animation-delay: 0.20s; }
+    .catalog-item:nth-child(5) { animation-delay: 0.25s; }
+    .catalog-item:nth-child(6) { animation-delay: 0.30s; }
+    .catalog-item:nth-child(7) { animation-delay: 0.35s; }
+
+    /* ---------- 子页面 ---------- */
+    #subpage {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5rem 2rem 3rem;
+        background: linear-gradient(160deg, var(--color-1), var(--color-4));
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+        overflow-y: auto;
+    }
+
+    #subpage.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .subpage-title {
+        font-size: 2.4rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        color: var(--color-3);
+        margin-bottom: 1rem;
+        text-shadow: 0 0 24px rgba(172, 209, 238, 0.55);
+    }
+
+    .subpage-deco {
+        font-size: 0.9rem;
+        color: var(--color-5);
+        letter-spacing: 0.12em;
+        margin-bottom: 2rem;
+        opacity: 0.8;
+    }
+
+    .subpage-placeholder {
+        font-size: 1.05rem;
+        font-weight: 300;
+        color: #6a7a8a;
+        line-height: 2;
+        text-align: center;
+        max-width: 520px;
+        padding: 1.6rem 2rem;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1.5px dashed rgba(128, 178, 229, 0.5);
+        border-radius: 18px;
+    }
+
+    @media (max-width: 600px) {
+        .catalog-title { font-size: 1.9rem; }
+        .catalog-sub { font-size: 0.8rem; letter-spacing: 0.2em; }
+        .catalog-deco { font-size: 0.7rem; }
+        .catalog-item { padding: 0.9rem 1.2rem; font-size: 1rem; }
+        .subpage-title { font-size: 1.8rem; }
+    }
+</style>
+
+<!-- 目录页 -->
+<div id="catalog">
+    <div class="catalog-title">目 录</div>
+    <div class="catalog-sub">· CONTENTS ·</div>
+    <div class="catalog-deco">—————·★₊˚☾.˖ ♥︎ ·˖✶—————</div>
+
+    <div class="catalog-list">
+        <div class="catalog-item" data-title="时间轴">
+            <span>时间轴</span><span class="arrow">→</span>
+        </div>
+        <div class="catalog-item" data-title="倒数日">
+            <span>倒数日</span><span class="arrow">→</span>
+        </div>
+        <div class="catalog-item" data-title="To Do List">
+            <span>To Do List</span><span class="arrow">→</span>
+        </div>
+        <div class="catalog-item" data-title="逃到世界尽头">
+            <span>逃到世界尽头</span><span class="arrow">→</span>
+        </div>
+        <div class="catalog-item" data-title="悄悄话">
+            <span>悄悄话</span><span class="arrow">→</span>
+        </div>
+        <div class="catalog-item" data-title="心情日记">
+            <span>心情日记</span><span class="arrow">→</span>
+        </div>
+        <div class="catalog-item" data-title="To Be Continue…">
+            <span>To Be Continue…</span><span class="arrow">→</span>
+        </div>
+    </div>
+</div>
+
+<!-- 子页面 -->
+<div id="subpage">
+    <div class="subpage-title" id="subpageTitle">标题</div>
+    <div class="subpage-deco">· ✦ · ✦ · ✦ ·</div>
+    <div class="subpage-placeholder">
+        「<span id="subpageName">内容</span>」<br>
+        故事还在继续...... ✨
+    </div>
+</div>
+
+<script>
+(function () {
+    var splash   = document.getElementById('splash');
+    var catalog  = document.getElementById('catalog');
+    var subpage  = document.getElementById('subpage');
+    var enterBtn = document.getElementById('enterBtn');
+    var backBtn  = document.getElementById('backBtn');
+
+    // -------- 进入目录页 --------
+    if (enterBtn) {
+        enterBtn.addEventListener('click', function () {
+            splash.classList.add('hide');
+            catalog.classList.add('show');
+            if (backBtn) backBtn.classList.add('show');
+        });
+    }
+
+    // -------- 点击目录项 → 打开子页面 --------
+    document.querySelectorAll('.catalog-item').forEach(function (item) {
+        item.addEventListener('click', function () {
+            var title = item.getAttribute('data-title');
+            document.getElementById('subpageTitle').textContent = title;
+            document.getElementById('subpageName').textContent = title;
+            subpage.classList.add('show');
+        });
+    });
+
+    // -------- 返回按钮：按层级返回 --------
+    if (backBtn) {
+        // 移除原按钮上的所有旧监听（用克隆方式，保留原样式和 id）
+        var newBack = backBtn.cloneNode(true);
+        backBtn.parentNode.replaceChild(newBack, backBtn);
+        backBtn = newBack;
+
+        backBtn.addEventListener('click', function () {
+            if (subpage.classList.contains('show')) {
+                // 子页面 → 目录页
+                subpage.classList.remove('show');
+            } else if (catalog.classList.contains('show')) {
+                // 目录页 → 开屏页
+                catalog.classList.remove('show');
+                splash.classList.remove('hide');
+                splash.style.display = '';
+                backBtn.classList.remove('show');
+
+                // 重播打字机
+                if (typeof startTyping === 'function') {
+                    startTyping();
+                } else if (typeof tick === 'function') {
+                    clearTimeout(window.timerId);
+                    window.charIndex = 0;
+                    window.isDeleting = false;
+                    document.getElementById('typewriter').textContent = '';
+                    setTimeout(tick, 600);
+                }
+            } else {
+                // 兜底：隐藏主界面，回开屏
+                var main = document.getElementById('main');
+                if (main) main.style.display = 'none';
+                splash.classList.remove('hide');
+                splash.style.display = '';
+                backBtn.classList.remove('show');
+                if (typeof startTyping === 'function') startTyping();
+            }
+        });
+    }
+})();
+</script>
+<!-- ===== 时间轴页面（自包含版） ===== -->
+<style>
+    #timelinePage {
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        background: linear-gradient(150deg, var(--color-1) 0%, var(--color-4) 55%, var(--color-2) 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    #timelinePage.show { opacity: 1; visibility: visible; }
+
+    .tl-header {
+        flex: 0 0 auto;
+        padding: 1.1rem 2rem 0.5rem;
+        text-align: center;
+        pointer-events: none;
+    }
+    .tl-header h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        color: var(--color-3);
+        text-shadow: 0 0 22px rgba(172, 209, 238, 0.55);
+    }
+    .tl-header .tl-sub {
+        margin-top: 0.3rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        color: var(--color-5);
+        opacity: 0.85;
+    }
+
+    .tl-canvas {
+        position: relative;
+        flex: 1 1 auto;
+        overflow: hidden;
+    }
+
+    .tl-track {
+        position: absolute;
+        left: 0; right: 0;
+        height: 0;
+        border-top: 2px dashed rgba(128, 178, 229, 0.6);
+        pointer-events: none;
+    }
+    .tl-connector {
+        position: absolute;
+        width: 2px;
+        border-left: 2px dashed rgba(128, 178, 229, 0.6);
+        pointer-events: none;
+    }
+    .tl-endcap {
+        position: absolute;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: var(--color-2);
+        box-shadow: 0 0 10px rgba(128, 178, 229, 0.9);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    .tl-node {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 3;
+    }
+
+    .tl-dot {
+        width: 13px; height: 13px;
+        border-radius: 50%;
+        background: var(--color-5);
+        box-shadow: 0 0 12px rgba(248, 194, 218, 0.95),
+                    0 0 22px rgba(248, 194, 218, 0.55);
+        animation: breathe 3s ease-in-out infinite;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tl-card {
+        padding: 0.4rem 0.85rem;
+        background: rgba(255, 255, 255, 0.85);
+        border: 1.5px solid rgba(128, 178, 229, 0.5);
+        border-radius: 12px;
+        backdrop-filter: blur(6px);
+        text-align: center;
+        white-space: nowrap;
+        box-shadow: 0 0 14px rgba(172, 209, 238, 0.35);
+        cursor: grab;
+        user-select: none;
+        transition: box-shadow 0.2s ease;
+    }
+    .tl-card:active { cursor: grabbing; }
+    .tl-card .tl-name { font-size: 0.92rem; letter-spacing: 0.08em; color: #4a5a6a; }
+    .tl-card .tl-time { margin-top: 0.12rem; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--color-3); opacity: 0.9; }
+
+    .tl-node.below .tl-card { margin-top: 0.5rem; }
+    .tl-node.above { flex-direction: column-reverse; }
+    .tl-node.above .tl-card { margin-top: 0; margin-bottom: 0.5rem; }
+
+    /* 删除按钮 */
+    .tl-del {
+        position: absolute;
+        top: -10px; right: -10px;
+        width: 20px; height: 20px;
+        line-height: 16px;
+        text-align: center;
+        font-size: 13px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        border: 2px solid #fff;
+        border-radius: 50%;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0.7);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(128, 178, 229, 0.5);
+        z-index: 6;
+    }
+    .tl-node:hover .tl-del { opacity: 1; transform: scale(1); pointer-events: auto; }
+    .tl-del:hover { background: linear-gradient(135deg, #f88, var(--color-5)); transform: scale(1.15); }
+
+    /* 拖动中 */
+    .tl-node.dragging { z-index: 999; }
+    .tl-node.dragging .tl-dot {
+        transform: scale(1.3);
+        box-shadow: 0 0 20px rgba(248, 194, 218, 1),
+                    0 0 40px rgba(248, 194, 218, 0.7);
+    }
+    .tl-node.dragging .tl-card {
+        box-shadow: 0 0 22px rgba(172, 209, 238, 0.7);
+    }
+    body.tl-dragging, body.tl-dragging * {
+        cursor: grabbing !important;
+        user-select: none !important;
+    }
+
+    /* 输入框 */
+    .tl-input-box {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        gap: 0.38rem;
+        padding: 0.65rem 0.85rem;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1.5px solid var(--color-5);
+        border-radius: 12px;
+        box-shadow: 0 0 22px rgba(248, 194, 218, 0.6);
+        z-index: 10;
+        min-width: 180px;
+    }
+    .tl-input-box input {
+        font-size: 0.82rem;
+        padding: 0.32rem 0.5rem;
+        border: 1px solid rgba(128, 178, 229, 0.5);
+        border-radius: 7px;
+        outline: none;
+        color: #4a5a6a;
+        background: #fff;
+    }
+    .tl-input-box input:focus {
+        border-color: var(--color-5);
+        box-shadow: 0 0 8px rgba(248, 194, 218, 0.6);
+    }
+
+    .tl-hint {
+        position: absolute;
+        bottom: 1.1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        color: var(--color-3);
+        opacity: 0.7;
+        pointer-events: none;
+        animation: breathe 4s ease-in-out infinite;
+        white-space: nowrap;
+    }
+
+    .tl-back {
+        position: fixed;
+        top: 2rem; left: 2rem;
+        z-index: 10002;
+        padding: 0.55rem 1.6rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        color: var(--color-3);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1.5px solid var(--color-3);
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s ease;
+    }
+    .tl-back:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(128, 178, 229, 0.6);
+        transform: translateX(-3px);
+    }
+
+    @media (max-width: 700px) {
+        .tl-header h2 { font-size: 1.4rem; }
+        .tl-card .tl-name { font-size: 0.8rem; }
+        .tl-card .tl-time { font-size: 0.62rem; }
+        .tl-back { top: 1rem; left: 1rem; padding: 0.45rem 1.2rem; font-size: 0.8rem; }
+        .tl-hint { font-size: 0.68rem; }
+    }
+</style>
+
+<div id="timelinePage">
+    <button class="tl-back" id="tlBack">← 返 回</button>
+    <div class="tl-header">
+        <h2>时 间 轴</h2>
+        <div class="tl-sub">· TIMELINE · 点击线条添加事件 · 拖动卡片移动 · 悬停 × 删除 ·</div>
+    </div>
+    <div class="tl-canvas" id="tlCanvas">
+        <div class="tl-hint">✧ 点击线条上的任意位置，输入事件名称与时间，回车保存 ✧</div>
+    </div>
+</div>
+
+<script>
+(function () {
+    // ============================================================
+    //  配置
+    // ============================================================
+    var TRACK_COUNT   = 3;
+    var HIT_TOLERANCE = 22;
+
+    var canvas = document.getElementById('tlCanvas');
+    var page   = document.getElementById('timelinePage');
+    var tlBack = document.getElementById('tlBack');
+
+    // 数据：ratio 是水平位置占宽度的比例（0~1）
+    var events = [
+        { track: 0, ratio: 0.04, name: '初识', time: '2024.08.23' }
+    ];
+
+    var trackYs = [];
+
+    // ============================================================
+    //  布局
+    // ============================================================
+    function computeTrackYs() {
+        var h = canvas.clientHeight;
+        var top    = h * 0.18;
+        var bottom = h * 0.82;
+        var step   = (bottom - top) / (TRACK_COUNT - 1);
+        trackYs = [];
+        for (var i = 0; i < TRACK_COUNT; i++) trackYs.push(top + step * i);
+    }
+
+    function isRightward(track) { return track % 2 === 0; }
+
+    function absoluteX(track, ratio) {
+        var w = canvas.clientWidth;
+        return isRightward(track) ? ratio * w : (1 - ratio) * w;
+    }
+
+    // ============================================================
+    //  渲染
+    // ============================================================
+    function render() {
+        computeTrackYs();
+        var w = canvas.clientWidth;
+
+        var hint = canvas.querySelector('.tl-hint');
+        canvas.innerHTML = '';
+        if (hint) canvas.appendChild(hint);
+
+        // 三条横线
+        for (var i = 0; i < TRACK_COUNT; i++) {
+            var line = document.createElement('div');
+            line.className = 'tl-track';
+            line.style.top = trackYs[i] + 'px';
+            canvas.appendChild(line);
+        }
+
+        // 两条竖线
+        var c1 = document.createElement('div');
+        c1.className = 'tl-connector';
+        c1.style.left = (w - 1) + 'px';
+        c1.style.top = trackYs[0] + 'px';
+        c1.style.height = (trackYs[1] - trackYs[0]) + 'px';
+        canvas.appendChild(c1);
+
+        var c2 = document.createElement('div');
+        c2.className = 'tl-connector';
+        c2.style.left = '1px';
+        c2.style.top = trackYs[1] + 'px';
+        c2.style.height = (trackYs[2] - trackYs[1]) + 'px';
+        canvas.appendChild(c2);
+
+        // 六个端点圆
+        [{x:0,y:trackYs[0]},{x:w,y:trackYs[0]},
+         {x:0,y:trackYs[1]},{x:w,y:trackYs[1]},
+         {x:0,y:trackYs[2]},{x:w,y:trackYs[2]}].forEach(function (p) {
+            var cap = document.createElement('div');
+            cap.className = 'tl-endcap';
+            cap.style.left = p.x + 'px';
+            cap.style.top  = p.y + 'px';
+            canvas.appendChild(cap);
+        });
+
+        // 事件节点
+        events.forEach(function (e, idx) {
+            var node = document.createElement('div');
+            node.className = 'tl-node ' + (isRightward(e.track) ? 'below' : 'above');
+            node.style.left = absoluteX(e.track, e.ratio) + 'px';
+            node.style.top  = trackYs[e.track] + 'px';
+            node.setAttribute('data-idx', idx);
+
+            node.innerHTML =
+                '<div class="tl-dot"></div>' +
+                '<div class="tl-card">' +
+                    '<div class="tl-name">' + escapeHtml(e.name) + '</div>' +
+                    '<div class="tl-time">' + escapeHtml(e.time) + '</div>' +
+                '</div>' +
+                '<span class="tl-del" title="删除">×</span>';
+
+            // 删除
+            node.querySelector('.tl-del').addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                events.splice(idx, 1);
+                render();
+            });
+
+            // 拖拽
+            attachDrag(node, idx);
+
+            canvas.appendChild(node);
+        });
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+        });
+    }
+
+    // ============================================================
+    //  拖拽
+    // ============================================================
+    function attachDrag(node, idx) {
+        var card = node.querySelector('.tl-card');
+        var startX, startY, origLeft, origTop, dragging = false;
+
+        card.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            dragging = true;
+            node.classList.add('dragging');
+            document.body.classList.add('tl-dragging');
+
+            startX = e.clientX;
+            startY = e.clientY;
+            origLeft = parseFloat(node.style.left);
+            origTop  = parseFloat(node.style.top);
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+
+        function onMove(e) {
+            if (!dragging) return;
+            node.style.left = (origLeft + e.clientX - startX) + 'px';
+            node.style.top  = (origTop  + e.clientY - startY) + 'px';
+        }
+
+        function onUp() {
+            dragging = false;
+            node.classList.remove('dragging');
+            document.body.classList.remove('tl-dragging');
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+
+            // 换算回 track / ratio 并写进 events，然后重渲染（吸附）
+            var absLeft = parseFloat(node.style.left);
+            var absTop  = parseFloat(node.style.top);
+            var w = canvas.clientWidth;
+
+            var nearest = 0, minDist = Infinity;
+            for (var i = 0; i < trackYs.length; i++) {
+                var d = Math.abs(absTop - trackYs[i]);
+                if (d < minDist) { minDist = d; nearest = i; }
+            }
+
+            var ratio = isRightward(nearest)
+                ? absLeft / w
+                : 1 - absLeft / w;
+            if (ratio < 0) ratio = 0;
+            if (ratio > 1) ratio = 1;
+
+            events[idx].track = nearest;
+            events[idx].ratio = ratio;
+            render();
+        }
+    }
+
+    // ============================================================
+    //  点击线条添加事件
+    // ============================================================
+    canvas.addEventListener('click', function (ev) {
+        if (ev.target.closest('.tl-node') || ev.target.closest('.tl-input-box')) return;
+
+        var rect = canvas.getBoundingClientRect();
+        var x = ev.clientX - rect.left;
+        var y = ev.clientY - rect.top;
+
+        var nearest = -1, minDist = Infinity;
+        for (var i = 0; i < trackYs.length; i++) {
+            var d = Math.abs(y - trackYs[i]);
+            if (d < minDist) { minDist = d; nearest = i; }
+        }
+        if (nearest < 0 || minDist > HIT_TOLERANCE) return;
+
+        var w = canvas.clientWidth;
+        var ratio = isRightward(nearest) ? (x / w) : (1 - x / w);
+        if (ratio < 0) ratio = 0;
+        if (ratio > 1) ratio = 1;
+
+        showInput(nearest, ratio);
+    });
+
+    function showInput(track, ratio) {
+        var old = canvas.querySelector('.tl-input-box');
+        if (old) old.remove();
+
+        var box = document.createElement('div');
+        box.className = 'tl-input-box';
+        box.style.left = absoluteX(track, ratio) + 'px';
+        box.style.top  = trackYs[track] + 'px';
+        box.innerHTML =
+            '<input type="text" class="tl-in-name" placeholder="事件名称" maxlength="20">' +
+            '<input type="text" class="tl-in-time" placeholder="时间（如 2025.01.01）" maxlength="20">';
+        canvas.appendChild(box);
+
+        var nameInput = box.querySelector('.tl-in-name');
+        var timeInput = box.querySelector('.tl-in-time');
+        nameInput.focus();
+
+        function save() {
+            var name = nameInput.value.trim();
+            var time = timeInput.value.trim();
+            if (!name) { nameInput.focus(); return; }
+            if (!time) { timeInput.focus(); return; }
+            events.push({ track: track, ratio: ratio, name: name, time: time });
+            box.remove();
+            render();
+        }
+
+        [nameInput, timeInput].forEach(function (inp) {
+            inp.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter')  { e.preventDefault(); save(); }
+                if (e.key === 'Escape') { box.remove(); }
+            });
+        });
+
+        setTimeout(function () {
+            document.addEventListener('mousedown', function onDoc(e) {
+                if (!box.contains(e.target)) {
+                    box.remove();
+                    document.removeEventListener('mousedown', onDoc);
+                }
+            });
+        }, 0);
+    }
+
+    // ============================================================
+    //  接入目录 + 返回 + resize
+    // ============================================================
+    document.querySelectorAll('.catalog-item').forEach(function (item) {
+        if (item.getAttribute('data-title') === '时间轴') {
+            item.addEventListener('click', function (ev) {
+                ev.stopImmediatePropagation();
+                var sub = document.getElementById('subpage');
+                if (sub) sub.classList.remove('show');
+                page.classList.add('show');
+                render();
+            }, true);
+        }
+    });
+
+    tlBack.addEventListener('click', function () {
+        page.classList.remove('show');
+    });
+
+    window.addEventListener('resize', function () {
+        if (page.classList.contains('show')) render();
+    });
+
+    render();
+})();
+</script>
+<!-- ===== 逃到世界尽头 页面补丁 ===== -->
+<style>
+    #escapePage {
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        background: linear-gradient(150deg, #eef2f7 0%, #e6eef8 55%, #dfe9f5 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #escapePage.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .esc-header {
+        flex: 0 0 auto;
+        padding: 1.1rem 2rem 0.5rem;
+        text-align: center;
+        pointer-events: none;
+    }
+
+    .esc-header h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        color: var(--color-3);
+        text-shadow: 0 0 22px rgba(172, 209, 238, 0.55);
+    }
+
+    .esc-header .esc-sub {
+        margin-top: 0.3rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        color: var(--color-5);
+        opacity: 0.85;
+    }
+
+    /* 地图容器 */
+    #escMap {
+        flex: 1 1 auto;
+        width: 100%;
+        min-height: 0;
+    }
+
+    /* 返回按钮 */
+    .esc-back {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 10002;
+        padding: 0.55rem 1.6rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        color: var(--color-3);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1.5px solid var(--color-3);
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s ease;
+    }
+
+    .esc-back:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(128, 178, 229, 0.6);
+        transform: translateX(-3px);
+    }
+
+    /* ---------- 气泡浮层 ---------- */
+    .esc-popup {
+        position: fixed;
+        z-index: 10005;
+        width: 300px;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding: 1rem 1.1rem;
+        background: rgba(255, 255, 255, 0.97);
+        border: 1.5px solid var(--color-2);
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(128, 178, 229, 0.35),
+                    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+        backdrop-filter: blur(10px);
+        transform: translate(-50%, 12px);
+        opacity: 0;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        pointer-events: none;
+    }
+
+    .esc-popup.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+        pointer-events: auto;
+    }
+
+    .esc-popup::before {
+        /* 小尖角 */
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        width: 14px;
+        height: 14px;
+        background: rgba(255, 255, 255, 0.97);
+        border-left: 1.5px solid var(--color-2);
+        border-top: 1.5px solid var(--color-2);
+        border-radius: 3px 0 0 0;
+    }
+
+    .esc-popup .pop-province {
+        font-size: 1.05rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        color: var(--color-3);
+        margin-bottom: 0.7rem;
+        text-align: center;
+    }
+
+    .esc-popup .pop-section {
+        margin-bottom: 0.75rem;
+    }
+
+    .esc-popup .pop-label {
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        color: var(--color-5);
+        margin-bottom: 0.35rem;
+    }
+
+    /* 点亮开关 */
+    .esc-toggle {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .esc-toggle button {
+        flex: 1;
+        padding: 0.4rem 0;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        border-radius: 9px;
+        border: 1.5px solid var(--color-2);
+        background: #fff;
+        color: var(--color-3);
+        cursor: pointer;
+        transition: all 0.22s ease;
+    }
+
+    .esc-toggle button:hover {
+        background: var(--color-1);
+    }
+
+    .esc-toggle button.active {
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 0 14px rgba(248, 194, 218, 0.6);
+    }
+
+    /* 文本框 */
+    .esc-popup textarea {
+        width: 100%;
+        min-height: 72px;
+        padding: 0.5rem 0.6rem;
+        font-size: 0.82rem;
+        line-height: 1.6;
+        color: #4a5a6a;
+        border: 1px solid rgba(128, 178, 229, 0.5);
+        border-radius: 9px;
+        outline: none;
+        resize: vertical;
+        background: #fff;
+        font-family: inherit;
+    }
+
+    .esc-popup textarea:focus {
+        border-color: var(--color-5);
+        box-shadow: 0 0 8px rgba(248, 194, 218, 0.5);
+    }
+
+    /* 上传区 */
+    .esc-upload {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .esc-upload input[type="file"] {
+        display: none;
+    }
+
+    .esc-upload-btn {
+        display: inline-block;
+        padding: 0.42rem 0.9rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.1em;
+        color: var(--color-3);
+        background: #fff;
+        border: 1.5px dashed var(--color-2);
+        border-radius: 9px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.22s ease;
+    }
+
+    .esc-upload-btn:hover {
+        border-color: var(--color-5);
+        color: var(--color-5);
+        background: var(--color-4);
+    }
+
+    .esc-thumbs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .esc-thumb {
+        position: relative;
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid rgba(128, 178, 229, 0.4);
+    }
+
+    .esc-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .esc-thumb .del {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        width: 16px;
+        height: 16px;
+        line-height: 14px;
+        text-align: center;
+        font-size: 12px;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    /* 保存 / 关闭 */
+    .esc-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.9rem;
+    }
+
+    .esc-actions button {
+        flex: 1;
+        padding: 0.48rem 0;
+        font-size: 0.85rem;
+        letter-spacing: 0.14em;
+        border-radius: 9px;
+        cursor: pointer;
+        border: none;
+        transition: all 0.22s ease;
+    }
+
+    .esc-save {
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        box-shadow: 0 0 14px rgba(128, 178, 229, 0.45);
+    }
+
+    .esc-save:hover {
+        box-shadow: 0 0 22px rgba(248, 194, 218, 0.7);
+        transform: translateY(-1px);
+    }
+
+    .esc-cancel {
+        color: #6a7a8a;
+        background: #eef2f7;
+    }
+
+    .esc-cancel:hover {
+        background: #e0e8f2;
+    }
+
+    /* 提示 */
+    .esc-toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        padding: 0.6rem 1.4rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        border-radius: 999px;
+        box-shadow: 0 6px 24px rgba(128, 178, 229, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 10010;
+    }
+
+    .esc-toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 600px) {
+        .esc-header h2 { font-size: 1.4rem; }
+        .esc-back { top: 1rem; left: 1rem; padding: 0.45rem 1.2rem; font-size: 0.8rem; }
+        .esc-popup { width: 260px; }
+    }
+/* ===== 气泡浮层滚动条：蓝粉配色 ===== */
+.esc-popup::-webkit-scrollbar {
+    width: 8px;
+}
+
+.esc-popup::-webkit-scrollbar-track {
+    background: rgba(214, 226, 240, 0.5);   /* 浅蓝底 */
+    border-radius: 999px;
+    margin: 8px 0;                           /* 上下留点空，不顶到头 */
+}
+
+.esc-popup::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-3), var(--color-5));
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.9);  /* 白色描边让它更细更精致 */
+    background-clip: padding-box;
+}
+
+.esc-popup::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--color-5), var(--color-3));
+    box-shadow: 0 0 8px rgba(248, 194, 218, 0.8);
+}
+
+/* Firefox 兼容 */
+.esc-popup {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-3) rgba(214, 226, 240, 0.5);
+}
+</style>
+
+<div id="escapePage">
+    <button class="esc-back" id="escBack">← 返 回</button>
+    <div class="esc-header">
+        <h2>逃 到 世 界 尽 头</h2>
+        <div class="esc-sub">· ESCAPE TO THE END OF THE WORLD · 点击省份留下足迹 ·</div>
+    </div>
+    <div id="escMap"></div>
+</div>
+
+<div class="esc-popup" id="escPopup"></div>
+<div class="esc-toast" id="escToast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+
+<script>
+(function () {
+    // ============================================================
+    //  数据
+    // ============================================================
+    // 每个省的记录： { lit: true/false, note: '文字', photos: [dataURL, ...] }
+    var provinceData = {};
+
+    var page   = document.getElementById('escapePage');
+    var mapEl  = document.getElementById('escMap');
+    var popup  = document.getElementById('escPopup');
+    var toast  = document.getElementById('escToast');
+    var escBack = document.getElementById('escBack');
+
+    var chart = null;
+    var geoJsonReady = false;
+    var geoJson = null;
+    var currentProvince = null;
+
+    // ============================================================
+    //  工具
+    // ============================================================
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(function () {
+            toast.classList.remove('show');
+        }, 1800);
+    }
+
+    // ============================================================
+    //  初始化 ECharts 地图
+    // ============================================================
+    function initChart() {
+        if (!chart) {
+            chart = echarts.init(mapEl);
+        }
+
+        // 组装每个省的颜色
+        var colors = {};
+        Object.keys(provinceData).forEach(function (name) {
+            var d = provinceData[name];
+            colors[name] = d.lit ? '#F8C2DA' : '#c9cdd4';
+        });
+
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: function (p) {
+                    var d = provinceData[p.name];
+                    var lit = d && d.lit ? '已点亮 ✦' : '未点亮';
+                    return p.name + '<br>' + lit;
+                }
+            },
+            series: [{
+                type: 'map',
+                map: 'china',
+                roam: true,
+                zoom: 1.15,
+                label: {
+                    show: true,
+                    fontSize: 9,
+                    color: '#5a6a7a'
+                },
+                itemStyle: {
+                    areaColor: '#c9cdd4',       // 默认灰色
+                    borderColor: '#ffffff',
+                    borderWidth: 1.2
+                },
+                emphasis: {
+                    itemStyle: {
+                        areaColor: '#ACD1EE',
+                        shadowBlur: 20,
+                        shadowColor: 'rgba(128, 178, 229, 0.6)'
+                    },
+                    label: { color: '#2a3a4a', fontWeight: 'bold' }
+                },
+                select: {
+                    disabled: true
+                },
+                data: Object.keys(provinceData).map(function (name) {
+                    return {
+                        name: name,
+                        itemStyle: {
+                            areaColor: provinceData[name].lit ? '#F8C2DA' : '#c9cdd4'
+                        }
+                    };
+                })
+            }]
+        };
+
+        chart.setOption(option);
+    }
+
+    // 注册地图并首次渲染
+    function loadMap() {
+        if (geoJsonReady) { initChart(); return; }
+
+        fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+            .then(function (r) { return r.json(); })
+            .then(function (json) {
+                geoJson = json;
+                echarts.registerMap('china', json);
+                geoJsonReady = true;
+                initChart();
+                bindChartEvents();
+            })
+            .catch(function () {
+                showToast('地图数据加载失败，请检查网络');
+            });
+    }
+
+    // ============================================================
+    //  绑定地图点击事件
+    // ============================================================
+    function bindChartEvents() {
+        chart.on('click', function (params) {
+            if (params.componentType !== 'series') return;
+            if (params.seriesType !== 'map') return;
+
+            var name = params.name;
+            if (!name) return;
+
+            currentProvince = name;
+
+            // 点击位置换算成屏幕坐标
+            var px = params.event.event.clientX;
+            var py = params.event.event.clientY;
+
+            openPopup(name, px, py);
+        });
+    }
+
+    // ============================================================
+    //  气泡浮层
+    // ============================================================
+    function openPopup(provinceName, screenX, screenY) {
+        var d = provinceData[provinceName] || { lit: false, note: '', photos: [] };
+        provinceData[provinceName] = d;
+
+        // 决定弹窗位置：默认在点击点下方；如果太靠右/下就调整
+        var popupW = 300;
+        var left = screenX;
+        var top  = screenY + 20;
+
+        // 简单边界处理
+        if (left - popupW / 2 < 8) left = popupW / 2 + 8;
+        if (left + popupW / 2 > window.innerWidth - 8) {
+            left = window.innerWidth - popupW / 2 - 8;
+        }
+        if (top + 400 > window.innerHeight) {
+            // 空间不够就放上面
+            top = Math.max(8, screenY - 420);
+        }
+
+        popup.style.left = left + 'px';
+        popup.style.top  = top + 'px';
+
+        // 组装内容
+        popup.innerHTML =
+            '<div class="pop-province">' + escapeHtml(provinceName) + '</div>' +
+
+            '<div class="pop-section">' +
+                '<div class="pop-label">1 · 是否点亮？</div>' +
+                '<div class="esc-toggle">' +
+                    '<button data-lit="yes" class="' + (d.lit ? 'active' : '') + '">是</button>' +
+                    '<button data-lit="no"  class="' + (!d.lit ? 'active' : '') + '">否</button>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="pop-section">' +
+                '<div class="pop-label">2 · 写点什么……</div>' +
+                '<textarea class="esc-note" placeholder="记下这次的心情或旅程……">' +
+                    escapeHtml(d.note || '') +
+                '</textarea>' +
+            '</div>' +
+
+            '<div class="pop-section">' +
+                '<div class="pop-label">3 · 传点什么……</div>' +
+                '<div class="esc-upload">' +
+                    '<input type="file" class="esc-file" accept="image/*" multiple>' +
+                    '<label class="esc-upload-btn" for="escFileInput_' + Date.now() + '">' +
+                        '＋ 选择照片' +
+                    '</label>' +
+                    '<div class="esc-thumbs"></div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="esc-actions">' +
+                '<button class="esc-cancel">关 闭</button>' +
+                '<button class="esc-save">保 存</button>' +
+            '</div>';
+
+        // 因为 label 的 for 需要唯一 id，这里手动处理一下
+        var fileInput = popup.querySelector('.esc-file');
+        var fileLabel = popup.querySelector('.esc-upload-btn');
+        fileInput.id = 'escFile_' + Date.now();
+        fileLabel.setAttribute('for', fileInput.id);
+
+        // 缩略图渲染
+        renderThumbs(d.photos);
+
+        // ---------- 事件绑定 ----------
+        // 点亮选择
+        popup.querySelectorAll('.esc-toggle button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var yes = btn.getAttribute('data-lit') === 'yes';
+                d.lit = yes;
+                popup.querySelectorAll('.esc-toggle button').forEach(function (b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+            });
+        });
+
+        // 文本框：回车换行，不保存
+        var noteEl = popup.querySelector('.esc-note');
+        noteEl.addEventListener('keydown', function (e) {
+            // 回车默认行为就是换行，什么都不做即可
+            // 这里只阻止 ESC 冒泡关闭
+            if (e.key === 'Escape') {
+                e.stopPropagation();
+            }
+        });
+
+        // 文件上传
+        fileInput.addEventListener('change', function () {
+            var files = Array.prototype.slice.call(fileInput.files || []);
+            files.forEach(function (f) {
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    d.photos.push(ev.target.result);
+                    renderThumbs(d.photos);
+                };
+                reader.readAsDataURL(f);
+            });
+            fileInput.value = '';
+        });
+
+        // 关闭
+        popup.querySelector('.esc-cancel').addEventListener('click', closePopup);
+
+        // 保存
+        popup.querySelector('.esc-save').addEventListener('click', function () {
+            d.note = noteEl.value;
+            // lit 和 photos 已经在交互中实时写进 d 了
+            closePopup();
+            refreshMap();
+            showToast('已保存 · ' + provinceName);
+        });
+
+        // 显示
+        requestAnimationFrame(function () {
+            popup.classList.add('show');
+        });
+    }
+
+    function renderThumbs(photos) {
+        var wrap = popup.querySelector('.esc-thumbs');
+        if (!wrap) return;
+        wrap.innerHTML = '';
+        photos.forEach(function (src, idx) {
+            var div = document.createElement('div');
+            div.className = 'esc-thumb';
+            div.innerHTML =
+                '<img src="' + src + '" alt="">' +
+                '<span class="del" data-idx="' + idx + '">×</span>';
+            wrap.appendChild(div);
+        });
+
+        wrap.querySelectorAll('.del').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var idx = parseInt(btn.getAttribute('data-idx'), 10);
+                if (currentProvince && provinceData[currentProvince]) {
+                    provinceData[currentProvince].photos.splice(idx, 1);
+                    renderThumbs(provinceData[currentProvince].photos);
+                }
+            });
+        });
+    }
+
+    function closePopup() {
+        popup.classList.remove('show');
+        currentProvince = null;
+    }
+
+    // 刷新地图上色
+    function refreshMap() {
+        if (!chart || !geoJsonReady) return;
+        initChart();
+    }
+
+    // ============================================================
+    //  接入目录
+    // ============================================================
+    document.querySelectorAll('.catalog-item').forEach(function (item) {
+        if (item.getAttribute('data-title') === '逃到世界尽头') {
+            item.addEventListener('click', function (ev) {
+                ev.stopImmediatePropagation();
+                var sub = document.getElementById('subpage');
+                if (sub) sub.classList.remove('show');
+                page.classList.add('show');
+
+                // 等容器显示后再初始化，否则尺寸为 0
+                setTimeout(function () {
+                    if (!chart) loadMap();
+                    else {
+                        chart.resize();
+                        refreshMap();
+                    }
+                }, 100);
+            }, true);
+        }
+    });
+
+    // 返回
+    escBack.addEventListener('click', function () {
+        closePopup();
+        page.classList.remove('show');
+    });
+
+    // 点击地图空白关闭气泡
+    document.addEventListener('mousedown', function (e) {
+        if (!popup.classList.contains('show')) return;
+        if (popup.contains(e.target)) return;
+        if (e.target.closest('#escMap')) return;  // 地图点击由 ECharts 处理
+        closePopup();
+    });
+
+    // 窗口变化
+    window.addEventListener('resize', function () {
+        if (chart && page.classList.contains('show')) chart.resize();
+    });
+
+    function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, function (c) {
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+        });
+    }
+})();
+</script>
+<!-- ===== 时间轴：删除 + 拖动 补丁 ===== -->
+<style>
+    /* 卡片可拖动的手型 */
+    .tl-card {
+        cursor: grab;
+        user-select: none;
+    }
+    .tl-card:active {
+        cursor: grabbing;
+    }
+
+    /* 节点悬停时浮出删除按钮 */
+    .tl-node .tl-del {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        line-height: 17px;
+        text-align: center;
+        font-size: 13px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        border: 2px solid #fff;
+        border-radius: 50%;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0.7);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(128, 178, 229, 0.5);
+        z-index: 6;
+    }
+
+    .tl-node:hover .tl-del {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+
+    .tl-node .tl-del:hover {
+        background: linear-gradient(135deg, #f88, var(--color-5));
+        transform: scale(1.15);
+    }
+
+    /* 拖动中的节点高亮 */
+    .tl-node.dragging {
+        z-index: 999;
+    }
+    .tl-node.dragging .tl-dot {
+        box-shadow: 0 0 20px rgba(248, 194, 218, 1),
+                    0 0 40px rgba(248, 194, 218, 0.7);
+        transform: scale(1.3);
+    }
+    .tl-node.dragging .tl-card {
+        box-shadow: 0 0 22px rgba(172, 209, 238, 0.7);
+    }
+
+    /* 拖动时鼠标全局 grabbing */
+    body.tl-dragging,
+    body.tl-dragging * {
+        cursor: grabbing !important;
+        user-select: none !important;
+    }
+</style>
+
+<script>
+(function () {
+    // 等原时间轴渲染完毕后，我们接管它的节点
+    var canvas = document.getElementById('tlCanvas');
+    if (!canvas) return;
+
+    // 拿到原页面里的 events 数组
+    // 原代码是 IIFE 包起来的，events 在闭包里，外部拿不到，
+    // 所以这里用「重写 render 后的 DOM 操作」方式：
+    // 通过 MutationObserver 监听节点被重新渲染，然后给每个节点补上删除按钮和拖拽。
+
+    // ---------- 删除按钮注入 ----------
+    function attachDelete(node) {
+        if (node.querySelector('.tl-del')) return;
+        var btn = document.createElement('span');
+        btn.className = 'tl-del';
+        btn.textContent = '×';
+        btn.title = '删除此事件';
+
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            // 找到这个节点对应的 events 索引
+            // 通过节点在 canvas 里的顺序反查太脆弱，改成给节点打标记
+            var idx = parseInt(node.getAttribute('data-event-idx'), 10);
+            if (isNaN(idx)) return;
+
+            // 调用原页面暴露的删除方法（下面会注入）
+            if (typeof window.__tlDeleteEvent === 'function') {
+                window.__tlDeleteEvent(idx);
+            }
+        });
+
+        node.appendChild(btn);
+    }
+
+    // ---------- 拖拽 ----------
+    function attachDrag(node) {
+        if (node.__dragAttached) return;
+        node.__dragAttached = true;
+
+        var card = node.querySelector('.tl-card');
+        if (!card) return;
+
+        var startX, startY, origLeft, origTop;
+        var dragging = false;
+
+        card.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            dragging = true;
+            node.classList.add('dragging');
+            document.body.classList.add('tl-dragging');
+
+            startX = e.clientX;
+            startY = e.clientY;
+            origLeft = parseFloat(node.style.left) || 0;
+            origTop  = parseFloat(node.style.top)  || 0;
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+
+        function onMove(e) {
+            if (!dragging) return;
+            var dx = e.clientX - startX;
+            var dy = e.clientY - startY;
+
+            node.style.left = (origLeft + dx) + 'px';
+            node.style.top  = (origTop  + dy) + 'px';
+        }
+
+        function onUp(e) {
+            if (!dragging) return;
+            dragging = false;
+            node.classList.remove('dragging');
+            document.body.classList.remove('tl-dragging');
+
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+
+            // 把拖动后的坐标换算回 { track, ratio } 并写回 events
+            var idx = parseInt(node.getAttribute('data-event-idx'), 10);
+            if (isNaN(idx)) return;
+
+            var newLeft = parseFloat(node.style.left) || 0;
+            var newTop  = parseFloat(node.style.top)  || 0;
+
+            if (typeof window.__tlMoveEvent === 'function') {
+                window.__tlMoveEvent(idx, newLeft, newTop);
+            }
+        }
+    }
+
+    // ---------- 给节点打上索引标记 ----------
+    // 原 render 每次重建 DOM，顺序和 events 数组一致。
+    // 所以按 DOM 中 .tl-node 的出现顺序编号即可。
+    function tagNodes() {
+        var nodes = canvas.querySelectorAll('.tl-node');
+        nodes.forEach(function (node, i) {
+            node.setAttribute('data-event-idx', i);
+            attachDelete(node);
+            attachDrag(node);
+        });
+    }
+
+    // ---------- 监听 canvas 内部变化 ----------
+    // 原 render 会整体替换 canvas.innerHTML，所以每次变化都重新标记。
+    var mo = new MutationObserver(function () {
+        // 用 rAF 等 DOM 稳定
+        requestAnimationFrame(tagNodes);
+    });
+    mo.observe(canvas, { childList: true, subtree: true });
+
+    // 首次执行
+    setTimeout(tagNodes, 200);
+
+    // 暴露删除 / 移动接口给上面的按钮和拖拽使用
+    // 这两个接口需要访问原 events 数组，所以必须由原脚本提供。
+    // 若原脚本没提供，就用「DOM 层面删除 + 触发一次原 render 无法同步」的降级方案：
+    // —— 最稳妥的方式是让原脚本暴露 events。下面给出降级：
+    // 通过自定义事件通知原脚本（需要您在原脚本里加一行监听，见说明）
+    //
+    // 这里先定义两个占位函数，若原脚本未覆盖，则删除/移动只在视觉上生效。
+    if (typeof window.__tlDeleteEvent !== 'function') {
+        window.__tlDeleteEvent = function (idx) {
+            // 降级：仅移除 DOM，不保证刷新后一致（因为没有 events 数组权限）
+            var nodes = canvas.querySelectorAll('.tl-node');
+            if (nodes[idx]) nodes[idx].remove();
+        };
+    }
+    if (typeof window.__tlMoveEvent !== 'function') {
+        window.__tlMoveEvent = function () {
+            // 降级：视觉上已经移动，不动 events
+        };
+    }
+})();
+</script>
+<!-- ===== To Do List 页面补丁 ===== -->
+<style>
+    #todoPage {
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        background: linear-gradient(150deg, var(--color-4) 0%, var(--color-1) 50%, var(--color-2) 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    #todoPage.show { opacity: 1; visibility: visible; }
+
+    /* ---------- 顶部 ---------- */
+    .todo-header {
+        flex: 0 0 auto;
+        padding: 2rem 2rem 1rem;
+        text-align: center;
+    }
+    .todo-header h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        color: var(--color-3);
+        text-shadow: 0 0 22px rgba(172, 209, 238, 0.55);
+    }
+    .todo-header .todo-sub {
+        margin-top: 0.35rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        color: var(--color-5);
+        opacity: 0.85;
+    }
+    .todo-header .todo-deco {
+        margin-top: 0.7rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        color: var(--color-3);
+        opacity: 0.6;
+    }
+
+    /* ---------- 列表容器 ---------- */
+    .todo-list {
+        flex: 1 1 auto;
+        width: min(560px, 88vw);
+        margin: 1.2rem auto 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    /* ---------- 单条 ---------- */
+    .todo-item {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 1.2rem;
+        background: rgba(255, 255, 255, 0.62);
+        border: 1.5px solid rgba(128, 178, 229, 0.45);
+        border-radius: 14px;
+        backdrop-filter: blur(8px);
+        transition: transform 0.25s ease, box-shadow 0.25s ease,
+                    background 0.25s ease, border-color 0.25s ease;
+        animation: todoIn 0.45s ease both;
+    }
+    .todo-item:hover {
+        transform: translateX(4px);
+        border-color: var(--color-5);
+        box-shadow: 0 0 16px rgba(248, 194, 218, 0.4);
+    }
+
+    @keyframes todoIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- 勾选框 ---------- */
+    .todo-check {
+        flex: 0 0 auto;
+        width: 24px;
+        height: 24px;
+        border-radius: 7px;
+        border: 2px solid var(--color-3);
+        background: #fff;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .todo-check::after {
+        content: "✓";
+        font-size: 15px;
+        color: #fff;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .todo-check:hover {
+        border-color: var(--color-5);
+        box-shadow: 0 0 10px rgba(248, 194, 218, 0.6);
+    }
+    .todo-check.checked {
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        border-color: transparent;
+        box-shadow: 0 0 14px rgba(248, 194, 218, 0.7);
+    }
+    .todo-check.checked::after {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* ---------- 文字 ---------- */
+    .todo-text {
+        flex: 1 1 auto;
+        font-size: 1.02rem;
+        letter-spacing: 0.08em;
+        color: #4a5a6a;
+        transition: color 0.3s ease, opacity 0.3s ease;
+        word-break: break-word;
+    }
+    .todo-item.done .todo-text {
+        text-decoration: line-through;
+        text-decoration-color: var(--color-5);
+        text-decoration-thickness: 2px;
+        color: var(--color-3);
+        opacity: 0.65;
+    }
+    .todo-item.done {
+        background: rgba(252, 225, 240, 0.35);
+        border-color: rgba(248, 194, 218, 0.6);
+    }
+
+    /* ---------- 删除按钮（hover 出现） ---------- */
+    .todo-del {
+        flex: 0 0 auto;
+        width: 20px;
+        height: 20px;
+        line-height: 18px;
+        text-align: center;
+        font-size: 13px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        border-radius: 50%;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0.7);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .todo-item:hover .todo-del {
+        opacity: 0.85;
+        transform: scale(1);
+    }
+    .todo-del:hover {
+        opacity: 1;
+        background: linear-gradient(135deg, #f88, var(--color-5));
+        transform: scale(1.15);
+    }
+
+    /* ---------- 加号条 ---------- */
+    .todo-add {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 1.2rem;
+        background: rgba(255, 255, 255, 0.35);
+        border: 1.5px dashed rgba(128, 178, 229, 0.6);
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        animation: todoIn 0.45s ease both;
+    }
+    .todo-add:hover {
+        border-color: var(--color-5);
+        background: rgba(252, 225, 240, 0.4);
+        box-shadow: 0 0 16px rgba(248, 194, 218, 0.4);
+        transform: translateX(4px);
+    }
+    .todo-add .plus {
+        flex: 0 0 auto;
+        width: 24px;
+        height: 24px;
+        line-height: 22px;
+        text-align: center;
+        font-size: 18px;
+        color: var(--color-3);
+        border: 2px dashed var(--color-3);
+        border-radius: 7px;
+        transition: all 0.25s ease;
+    }
+    .todo-add:hover .plus {
+        color: var(--color-5);
+        border-color: var(--color-5);
+    }
+    .todo-add .placeholder {
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+        color: var(--color-3);
+        opacity: 0.7;
+    }
+
+    /* ---------- 添加时的输入条 ---------- */
+    .todo-input-item {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 1.2rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1.5px solid var(--color-5);
+        border-radius: 14px;
+        box-shadow: 0 0 18px rgba(248, 194, 218, 0.5);
+        animation: todoIn 0.3s ease both;
+    }
+    .todo-input-item .fake-check {
+        flex: 0 0 auto;
+        width: 24px;
+        height: 24px;
+        border-radius: 7px;
+        border: 2px solid var(--color-3);
+        opacity: 0.5;
+    }
+    .todo-input-item input {
+        flex: 1 1 auto;
+        font-size: 1rem;
+        letter-spacing: 0.08em;
+        color: #4a5a6a;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: inherit;
+    }
+    .todo-input-item input::placeholder {
+        color: var(--color-3);
+        opacity: 0.55;
+    }
+
+    /* ---------- 返回 ---------- */
+    .todo-back {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 10002;
+        padding: 0.55rem 1.6rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        color: var(--color-3);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1.5px solid var(--color-3);
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s ease;
+    }
+    .todo-back:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(128, 178, 229, 0.6);
+        transform: translateX(-3px);
+    }
+
+    @media (max-width: 600px) {
+        .todo-header h2 { font-size: 1.4rem; }
+        .todo-text { font-size: 0.92rem; }
+        .todo-back { top: 1rem; left: 1rem; padding: 0.45rem 1.2rem; font-size: 0.8rem; }
+    }
+</style>
+
+<div id="todoPage">
+    <button class="todo-back" id="todoBack">← 返 回</button>
+
+    <div class="todo-header">
+        <h2>TO DO LIST</h2>
+        <div class="todo-sub">· 想和你一起做的事 ·</div>
+        <div class="todo-deco">—————·★₊˚☾.˖ ♥︎ ·˖✶—————</div>
+    </div>
+
+    <div class="todo-list" id="todoList"></div>
+</div>
+
+<script>
+(function () {
+    var page = document.getElementById('todoPage');
+    var listEl = document.getElementById('todoList');
+    var backBtn = document.getElementById('todoBack');
+
+    // ============================================================
+    //  初始数据
+    // ============================================================
+    var todos = [
+        { text: '一起去看海',      done: false },
+        { text: '一起看日出',      done: false },
+        { text: '一起看日落',      done: false },
+        { text: '一起去山顶看星星', done: false },
+        { text: '一起坐一次绿皮火车', done: false },
+        { text: '一起在雨天散步',   done: false },
+        { text: '一起做一顿晚饭',   done: false },
+        { text: '一起看一场老电影', done: false },
+        { text: '一起养一只猫',     done: false },
+        { text: '一起去一次海边小镇', done: false },
+        { text: '一起在冬天堆雪人',  done: false },
+        { text: '一起看完一整套漫画', done: false },
+        { text: '一起去逛一次夜市',  done: false },
+        { text: '一起在阳台种花',   done: false },
+        { text: '一起拍一张拍立得',  done: false },
+        { text: '一起跨年倒数',     done: false }
+    ];
+
+    // ============================================================
+    //  渲染
+    // ============================================================
+    function render() {
+        listEl.innerHTML = '';
+
+        todos.forEach(function (t, idx) {
+            var item = document.createElement('div');
+            item.className = 'todo-item' + (t.done ? ' done' : '');
+            item.style.animationDelay = (idx * 0.04) + 's';
+
+            item.innerHTML =
+                '<div class="todo-check' + (t.done ? ' checked' : '') + '"></div>' +
+                '<div class="todo-text">' + escapeHtml(t.text) + '</div>' +
+                '<div class="todo-del" title="删除">×</div>';
+
+            // 勾选
+            item.querySelector('.todo-check').addEventListener('click', function () {
+                t.done = !t.done;
+                render();
+            });
+
+            // 删除
+            item.querySelector('.todo-del').addEventListener('click', function (e) {
+                e.stopPropagation();
+                todos.splice(idx, 1);
+                render();
+            });
+
+            listEl.appendChild(item);
+        });
+
+        // 加号条
+        var addItem = document.createElement('div');
+        addItem.className = 'todo-add';
+        addItem.innerHTML =
+            '<div class="plus">＋</div>' +
+            '<div class="placeholder">添加一条新的愿望……</div>';
+
+        addItem.addEventListener('click', function () {
+            showInput();
+        });
+
+        listEl.appendChild(addItem);
+    }
+
+    // ============================================================
+    //  添加输入条
+    // ============================================================
+    function showInput() {
+        // 已有输入条就不重复开
+        if (listEl.querySelector('.todo-input-item')) return;
+
+        var inputItem = document.createElement('div');
+        inputItem.className = 'todo-input-item';
+        inputItem.innerHTML =
+            '<div class="fake-check"></div>' +
+            '<input type="text" placeholder="写下一个想一起做的事……" maxlength="30">';
+
+        // 插在加号条前面
+        var addItem = listEl.querySelector('.todo-add');
+        listEl.insertBefore(inputItem, addItem);
+
+        var input = inputItem.querySelector('input');
+        input.focus();
+
+        function save() {
+            var v = input.value.trim();
+            if (!v) { inputItem.remove(); return; }
+            todos.push({ text: v, done: false });
+            inputItem.remove();
+            render();
+        }
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter')  { e.preventDefault(); save(); }
+            if (e.key === 'Escape') { inputItem.remove(); }
+        });
+
+        // 失焦也保存（点别处就保存，体验更顺）
+        input.addEventListener('blur', function () {
+            // 延迟一点，避免和 Enter/Escape 冲突
+            setTimeout(function () {
+                if (document.body.contains(inputItem)) save();
+            }, 120);
+        });
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+        });
+    }
+
+    // ============================================================
+    //  接入目录
+    // ============================================================
+    document.querySelectorAll('.catalog-item').forEach(function (item) {
+        if (item.getAttribute('data-title') === 'To Do List') {
+            item.addEventListener('click', function (ev) {
+                ev.stopImmediatePropagation();
+                var sub = document.getElementById('subpage');
+                if (sub) sub.classList.remove('show');
+                page.classList.add('show');
+                render();
+            }, true);
+        }
+    });
+
+    // 返回
+    backBtn.addEventListener('click', function () {
+        page.classList.remove('show');
+    });
+
+    render();
+})();
+</script>
+<!-- ===== To Do List 持久化补丁 ===== -->
+<script>
+(function () {
+    var STORAGE_KEY = 'todo_list_data_v1';
+
+    // 等原脚本把列表渲染出来后再接管
+    function init() {
+        var listEl = document.getElementById('todoList');
+        if (!listEl) return;
+
+        // 从 localStorage 读回数据，覆盖页面上的 DOM
+        var saved = null;
+        try {
+            saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        } catch (e) { saved = null; }
+
+        if (!Array.isArray(saved) || !saved.length) {
+            // 没有存档：说明是第一次用，把页面上现有的 DOM 转成数据存起来
+            saveFromDom();
+        } else {
+            // 有存档：用存档重画页面
+            renderFromData(saved);
+        }
+
+        // 监听整个列表的点击，任何勾选 / 删除 / 新增之后都自动保存
+        // 用「DOM 变化 + 点击」双保险
+        var observer = new MutationObserver(function () {
+            saveFromDom();
+        });
+        observer.observe(listEl, { childList: true, subtree: true, attributes: true });
+
+        // 点击勾选框 / 删除按钮之后，属性变化由 observer 捕获，这里再兜一层
+        listEl.addEventListener('click', function () {
+            setTimeout(saveFromDom, 30);
+        });
+    }
+
+    // ---------- 把当前 DOM 读成数据并写入 localStorage ----------
+    function saveFromDom() {
+        var listEl = document.getElementById('todoList');
+        if (!listEl) return;
+
+        var items = listEl.querySelectorAll('.todo-item');
+        var data = [];
+        items.forEach(function (item) {
+            var textEl = item.querySelector('.todo-text');
+            var checkEl = item.querySelector('.todo-check');
+            if (!textEl) return;
+            data.push({
+                text: textEl.textContent,
+                done: checkEl && checkEl.classList.contains('checked')
+            });
+        });
+
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {}
+    }
+
+    // ---------- 用存档数据重画列表 ----------
+    function renderFromData(data) {
+        var listEl = document.getElementById('todoList');
+        if (!listEl) return;
+
+        // 清空现有列表
+        listEl.innerHTML = '';
+
+        data.forEach(function (t, idx) {
+            var item = document.createElement('div');
+            item.className = 'todo-item' + (t.done ? ' done' : '');
+            item.style.animationDelay = (idx * 0.04) + 's';
+
+            item.innerHTML =
+                '<div class="todo-check' + (t.done ? ' checked' : '') + '"></div>' +
+                '<div class="todo-text"></div>' +
+                '<div class="todo-del" title="删除">×</div>';
+
+            // 用 textContent 赋值，避免 XSS 和转义问题
+            item.querySelector('.todo-text').textContent = t.text;
+
+            // 勾选
+            item.querySelector('.todo-check').addEventListener('click', function () {
+                item.classList.toggle('done');
+                item.querySelector('.todo-check').classList.toggle('checked');
+            });
+
+            // 删除
+            item.querySelector('.todo-del').addEventListener('click', function (e) {
+                e.stopPropagation();
+                item.remove();
+            });
+
+            listEl.appendChild(item);
+        });
+
+        // 加号条
+        var addItem = document.createElement('div');
+        addItem.className = 'todo-add';
+        addItem.innerHTML =
+            '<div class="plus">＋</div>' +
+            '<div class="placeholder">添加一条新的愿望……</div>';
+
+        addItem.addEventListener('click', function () {
+            showInput(listEl, addItem);
+        });
+
+        listEl.appendChild(addItem);
+    }
+
+    // ---------- 添加输入条 ----------
+    function showInput(listEl, addItem) {
+        if (listEl.querySelector('.todo-input-item')) return;
+
+        var inputItem = document.createElement('div');
+        inputItem.className = 'todo-input-item';
+        inputItem.innerHTML =
+            '<div class="fake-check"></div>' +
+            '<input type="text" placeholder="写下一个想一起做的事……" maxlength="30">';
+
+        listEl.insertBefore(inputItem, addItem);
+        var input = inputItem.querySelector('input');
+        input.focus();
+
+        function save() {
+            var v = input.value.trim();
+            if (v) {
+                var item = document.createElement('div');
+                item.className = 'todo-item';
+
+                item.innerHTML =
+                    '<div class="todo-check"></div>' +
+                    '<div class="todo-text"></div>' +
+                    '<div class="todo-del" title="删除">×</div>';
+
+                item.querySelector('.todo-text').textContent = v;
+
+                item.querySelector('.todo-check').addEventListener('click', function () {
+                    item.classList.toggle('done');
+                    item.querySelector('.todo-check').classList.toggle('checked');
+                });
+
+                item.querySelector('.todo-del').addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    item.remove();
+                });
+
+                listEl.insertBefore(item, addItem);
+            }
+            inputItem.remove();
+        }
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter')  { e.preventDefault(); save(); }
+            if (e.key === 'Escape') { inputItem.remove(); }
+        });
+
+        input.addEventListener('blur', function () {
+            setTimeout(function () {
+                if (document.body.contains(inputItem)) save();
+            }, 120);
+        });
+    }
+
+    // 等主脚本渲染完成
+    setTimeout(init, 300);
+})();
+</script>
+<!-- ===== 倒数日 页面补丁 ===== -->
+<style>
+    #countdownPage {
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        background: linear-gradient(150deg, var(--color-1) 0%, var(--color-4) 55%, var(--color-2) 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    #countdownPage.show { opacity: 1; visibility: visible; }
+
+    .cd-header {
+        flex: 0 0 auto;
+        padding: 2rem 2rem 0.6rem;
+        text-align: center;
+    }
+    .cd-header h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        color: var(--color-3);
+        text-shadow: 0 0 22px rgba(172, 209, 238, 0.55);
+    }
+    .cd-header .cd-sub {
+        margin-top: 0.35rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        color: var(--color-5);
+        opacity: 0.85;
+    }
+
+    /* ---------- 卡片列表 ---------- */
+    .cd-list {
+        flex: 1 1 auto;
+        width: min(560px, 90vw);
+        margin: 1.2rem auto 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+    }
+
+    /* ---------- 单张卡片（翻转容器） ---------- */
+    .cd-card-wrap {
+        perspective: 1200px;
+    }
+
+    .cd-card {
+        position: relative;
+        width: 100%;
+        min-height: 190px;
+        transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transform-style: preserve-3d;
+        cursor: pointer;
+    }
+    .cd-card.flipped {
+        transform: rotateY(180deg);
+    }
+
+    /* 正反面公共 */
+    .cd-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        border-radius: 18px;
+        padding: 1.4rem 1.6rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 6px 22px rgba(128, 178, 229, 0.25),
+                    0 0 0 1.5px rgba(128, 178, 229, 0.35) inset;
+        backdrop-filter: blur(8px);
+        transition: box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    /* 正面 */
+    .cd-front {
+        background: rgba(255, 255, 255, 0.78);
+    }
+    .cd-front::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-3), var(--color-5), var(--color-3));
+        background-size: 200% 100%;
+        animation: cdFlow 4s linear infinite;
+    }
+    @keyframes cdFlow {
+        to { background-position: 200% 0; }
+    }
+
+    .cd-card-wrap:hover .cd-face {
+        box-shadow: 0 10px 30px rgba(248, 194, 218, 0.45),
+                    0 0 0 1.5px rgba(248, 194, 218, 0.5) inset;
+    }
+
+    .cd-top {
+        font-size: 0.95rem;
+        letter-spacing: 0.18em;
+        color: var(--color-3);
+        opacity: 0.9;
+    }
+    .cd-days {
+        margin: 0.4rem 0 0.55rem;
+        font-size: 3.2rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 24px rgba(248, 194, 218, 0.5);
+        line-height: 1.1;
+    }
+    .cd-days .unit {
+        font-size: 1.2rem;
+        margin-left: 0.25rem;
+        color: var(--color-3);
+        -webkit-text-fill-color: var(--color-3);
+    }
+    .cd-note {
+        font-size: 0.92rem;
+        letter-spacing: 0.08em;
+        color: #6a7a8a;
+        opacity: 0.85;
+        font-weight: 300;
+        max-width: 90%;
+        word-break: break-word;
+    }
+
+    /* 反面 */
+    .cd-back {
+        background: linear-gradient(150deg, var(--color-2), var(--color-5));
+        color: #fff;
+        transform: rotateY(180deg);
+    }
+    .cd-back .back-label {
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        opacity: 0.85;
+        margin-bottom: 0.6rem;
+    }
+    .cd-back .back-date {
+        font-size: 2rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
+    }
+    .cd-back .back-target {
+        margin-top: 0.6rem;
+        font-size: 0.9rem;
+        letter-spacing: 0.14em;
+        opacity: 0.9;
+    }
+    .cd-back .back-hint {
+        position: absolute;
+        bottom: 1rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        opacity: 0.75;
+    }
+
+    /* ---------- 操作浮层（编辑 / 翻面） ---------- */
+    .cd-actions {
+        position: fixed;
+        z-index: 10005;
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.98);
+        border: 1.5px solid var(--color-2);
+        border-radius: 14px;
+        box-shadow: 0 8px 26px rgba(128, 178, 229, 0.4);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transform: translate(-50%, -6px) scale(0.95);
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .cd-actions.show {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+        pointer-events: auto;
+    }
+    .cd-actions button {
+        padding: 0.42rem 0.95rem;
+        font-size: 0.82rem;
+        letter-spacing: 0.1em;
+        border: none;
+        border-radius: 9px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s ease;
+    }
+    .cd-act-edit {
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+    }
+    .cd-act-edit:hover { box-shadow: 0 0 14px rgba(248, 194, 218, 0.7); }
+    .cd-act-flip {
+        color: var(--color-3);
+        background: var(--color-1);
+    }
+    .cd-act-flip:hover { background: var(--color-2); color: #fff; }
+    .cd-act-del {
+        color: #e66;
+        background: #fdecec;
+    }
+    .cd-act-del:hover { background: #f8d0d0; }
+
+    /* ---------- 编辑面板 ---------- */
+    .cd-editor {
+        position: fixed;
+        inset: 0;
+        z-index: 10008;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(214, 226, 240, 0.55);
+        backdrop-filter: blur(6px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .cd-editor.show { opacity: 1; visibility: visible; }
+
+    .cd-editor-box {
+        width: min(420px, 92vw);
+        padding: 1.4rem 1.5rem 1.2rem;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 12px 48px rgba(128, 178, 229, 0.4);
+        transform: translateY(10px);
+        transition: transform 0.3s ease;
+    }
+    .cd-editor.show .cd-editor-box { transform: translateY(0); }
+
+    .cd-editor-box h3 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        color: var(--color-3);
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    .cd-field { margin-bottom: 0.75rem; }
+    .cd-field label {
+        display: block;
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        color: var(--color-5);
+        margin-bottom: 0.3rem;
+    }
+    .cd-field input {
+        width: 100%;
+        padding: 0.5rem 0.7rem;
+        font-size: 0.9rem;
+        color: #4a5a6a;
+        border: 1px solid rgba(128, 178, 229, 0.5);
+        border-radius: 9px;
+        outline: none;
+        background: #fff;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+    .cd-field input:focus {
+        border-color: var(--color-5);
+        box-shadow: 0 0 8px rgba(248, 194, 218, 0.5);
+    }
+    .cd-editor-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .cd-editor-actions button {
+        flex: 1;
+        padding: 0.55rem 0;
+        font-size: 0.88rem;
+        letter-spacing: 0.14em;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.22s ease;
+    }
+    .cd-save {
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        box-shadow: 0 0 14px rgba(128, 178, 229, 0.4);
+    }
+    .cd-save:hover { box-shadow: 0 0 22px rgba(248, 194, 218, 0.7); }
+    .cd-cancel {
+        color: #6a7a8a;
+        background: #eef2f7;
+    }
+    .cd-cancel:hover { background: #e0e8f2; }
+
+    /* ---------- 新增卡片 ---------- */
+    .cd-add {
+        min-height: 110px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1.8px dashed rgba(128, 178, 229, 0.65);
+        border-radius: 18px;
+        cursor: pointer;
+        transition: all 0.28s ease;
+    }
+    .cd-add:hover {
+        border-color: var(--color-5);
+        background: rgba(252, 225, 240, 0.45);
+        box-shadow: 0 0 20px rgba(248, 194, 218, 0.45);
+        transform: translateY(-2px);
+    }
+    .cd-add .plus-circle {
+        width: 42px;
+        height: 42px;
+        line-height: 38px;
+        text-align: center;
+        font-size: 24px;
+        color: var(--color-3);
+        border: 2px dashed var(--color-3);
+        border-radius: 50%;
+        transition: all 0.28s ease;
+    }
+    .cd-add:hover .plus-circle {
+        color: var(--color-5);
+        border-color: var(--color-5);
+        transform: rotate(90deg);
+    }
+    .cd-add .add-text {
+        font-size: 0.85rem;
+        letter-spacing: 0.16em;
+        color: var(--color-3);
+        opacity: 0.75;
+    }
+
+    /* ---------- 返回 ---------- */
+    .cd-back-btn {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 10002;
+        padding: 0.55rem 1.6rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        color: var(--color-3);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1.5px solid var(--color-3);
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s ease;
+    }
+    .cd-back-btn:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(128, 178, 229, 0.6);
+        transform: translateX(-3px);
+    }
+
+    @media (max-width: 600px) {
+        .cd-header h2 { font-size: 1.4rem; }
+        .cd-days { font-size: 2.4rem; }
+        .cd-back-btn { top: 1rem; left: 1rem; padding: 0.45rem 1.2rem; font-size: 0.8rem; }
+    }
+</style>
+
+<div id="countdownPage">
+    <button class="cd-back-btn" id="cdBack">← 返 回</button>
+
+    <div class="cd-header">
+        <h2>倒 数 日</h2>
+        <div class="cd-sub">· COUNTDOWN ·</div>
+    </div>
+
+    <div class="cd-list" id="cdList"></div>
+</div>
+
+<!-- 操作浮层 -->
+<div class="cd-actions" id="cdActions">
+    <button class="cd-act-edit">编 辑</button>
+    <button class="cd-act-flip">翻 面</button>
+    <button class="cd-act-del">删 除</button>
+</div>
+
+<!-- 编辑面板 -->
+<div class="cd-editor" id="cdEditor">
+    <div class="cd-editor-box">
+        <h3>编辑倒数日</h3>
+        <div class="cd-field">
+            <label>事件名称</label>
+            <input type="text" id="cdInputName" maxlength="20" placeholder="例如：zzh 生日">
+        </div>
+        <div class="cd-field">
+            <label>目标日期（月-日 或 年-月-日）</label>
+            <input type="text" id="cdInputDate" maxlength="12" placeholder="例如：08-09 或 2026-08-09">
+        </div>
+        <div class="cd-field">
+            <label>起始日期（可选，默认今天）</label>
+            <input type="text" id="cdInputStart" maxlength="12" placeholder="例如：2024-01-01">
+        </div>
+        <div class="cd-field">
+            <label>记录一句话</label>
+            <input type="text" id="cdInputNote" maxlength="40" placeholder="写点什么……">
+        </div>
+        <div class="cd-editor-actions">
+            <button class="cd-cancel" id="cdCancel">取 消</button>
+            <button class="cd-save" id="cdSave">保 存</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var STORAGE_KEY = 'countdown_data_v1';
+
+    var page    = document.getElementById('countdownPage');
+    var listEl  = document.getElementById('cdList');
+    var backBtn = document.getElementById('cdBack');
+    var actions = document.getElementById('cdActions');
+    var editor  = document.getElementById('cdEditor');
+
+    // ============================================================
+    //  数据
+    // ============================================================
+    // 默认两条：zzh 生日 08-09，xk 生日 10-18
+    var defaultData = [
+        {
+            name: 'zzh 生日',
+            target: '08-09',
+            start: todayStr(),
+            note: '记得准备礼物和蛋糕 🎂'
+        },
+        {
+            name: 'xk 生日',
+            target: '10-18',
+            start: todayStr(),
+            note: '想和你一起过 ✨'
+        }
+    ];
+
+    var items = load();
+    var editingIndex = -1;
+    var activeIndex  = -1;
+
+    // ============================================================
+    //  工具
+    // ============================================================
+    function todayStr() {
+        var d = new Date();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + m + '-' + day;
+    }
+
+    // 解析 "08-09" 或 "2026-08-09"
+    function parseTarget(s) {
+        s = String(s || '').trim();
+        var parts = s.split('-').map(function (x) { return parseInt(x, 10); });
+        var now = new Date();
+        var year, month, day;
+
+        if (parts.length === 3) {
+            year = parts[0]; month = parts[1]; day = parts[2];
+        } else if (parts.length === 2) {
+            month = parts[0]; day = parts[1];
+            year = now.getFullYear();
+            // 如果今年已过，就取明年
+            var thisYear = new Date(year, month - 1, day);
+            if (thisYear < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
+                year += 1;
+            }
+        } else {
+            return null;
+        }
+
+        if (!month || !day) return null;
+        return new Date(year, month - 1, day);
+    }
+
+    // 计算天数差（目标 - 今天）
+    function daysUntil(targetStr) {
+        var target = parseTarget(targetStr);
+        if (!target) return null;
+
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var diff = Math.round((target - today) / 86400000);
+        return diff;
+    }
+
+    function formatDate(s) {
+        if (!s) return '—';
+        var parts = String(s).split('-');
+        if (parts.length === 3) return parts[0] + '.' + parts[1] + '.' + parts[2];
+        if (parts.length === 2) return parts[0] + '.' + parts[1];
+        return s;
+    }
+
+    function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, function (c) {
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+        });
+    }
+
+    // ============================================================
+    //  持久化
+    // ============================================================
+    function load() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return defaultData.slice();
+            var arr = JSON.parse(raw);
+            if (!Array.isArray(arr) || !arr.length) return defaultData.slice();
+            return arr;
+        } catch (e) {
+            return defaultData.slice();
+        }
+    }
+
+    function save() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        } catch (e) {}
+    }
+
+    // ============================================================
+    //  渲染
+    // ============================================================
+    function render() {
+        listEl.innerHTML = '';
+
+        items.forEach(function (it, idx) {
+            var wrap = document.createElement('div');
+            wrap.className = 'cd-card-wrap';
+            wrap.style.animation = 'todoIn 0.45s ease both';
+            wrap.style.animationDelay = (idx * 0.06) + 's';
+
+            var days = daysUntil(it.target);
+            var daysText = (days === null) ? '?' : days;
+            var topText = '距 ' + it.name + ' 还有';
+
+            wrap.innerHTML =
+                '<div class="cd-card" data-idx="' + idx + '">' +
+                    '<div class="cd-face cd-front">' +
+                        '<div class="cd-top">' + escapeHtml(topText) + '</div>' +
+                        '<div class="cd-days">' + daysText + '<span class="unit">天</span></div>' +
+                        '<div class="cd-note">' + escapeHtml(it.note || '写点什么……') + '</div>' +
+                    '</div>' +
+                    '<div class="cd-face cd-back">' +
+                        '<div class="back-label">START DATE</div>' +
+                        '<div class="back-date">' + formatDate(it.start) + '</div>' +
+                        '<div class="back-target">目标 · ' + formatDate(it.target) + '</div>' +
+                        '<div class="back-hint">点击卡片翻回正面</div>' +
+                    '</div>' +
+                '</div>';
+
+            // 点击卡片 → 弹操作浮层
+            var card = wrap.querySelector('.cd-card');
+            card.addEventListener('click', function (e) {
+                e.stopPropagation();
+                openActions(idx, e.clientX, e.clientY);
+            });
+
+            listEl.appendChild(wrap);
+        });
+
+        // 新增卡片
+        var add = document.createElement('div');
+        add.className = 'cd-add';
+        add.innerHTML =
+            '<div class="plus-circle">＋</div>' +
+            '<div class="add-text">添加一个倒数日</div>';
+        add.addEventListener('click', function () {
+            openEditor(-1);
+        });
+        listEl.appendChild(add);
+    }
+
+    // ============================================================
+    //  操作浮层
+    // ============================================================
+    function openActions(idx, x, y) {
+        activeIndex = idx;
+
+        var w = 200;
+        var left = x;
+        var top  = y + 12;
+        if (left - w / 2 < 8) left = w / 2 + 8;
+        if (left + w / 2 > window.innerWidth - 8) left = window.innerWidth - w / 2 - 8;
+        if (top + 60 > window.innerHeight) top = y - 60;
+
+        actions.style.left = left + 'px';
+        actions.style.top  = top + 'px';
+        actions.classList.add('show');
+    }
+
+    function closeActions() {
+        actions.classList.remove('show');
+        activeIndex = -1;
+    }
+
+    // 浮层按钮
+    actions.querySelector('.cd-act-edit').addEventListener('click', function () {
+        openEditor(activeIndex);
+        closeActions();
+    });
+
+    actions.querySelector('.cd-act-flip').addEventListener('click', function () {
+        var idx = activeIndex;
+        closeActions();
+        var card = listEl.querySelector('.cd-card[data-idx="' + idx + '"]');
+        if (card) card.classList.toggle('flipped');
+    });
+
+    actions.querySelector('.cd-act-del').addEventListener('click', function () {
+        var idx = activeIndex;
+        closeActions();
+        if (idx < 0) return;
+        items.splice(idx, 1);
+        save();
+        render();
+    });
+
+    // 点别处关浮层
+    document.addEventListener('click', function (e) {
+        if (!actions.classList.contains('show')) return;
+        if (actions.contains(e.target)) return;
+        closeActions();
+    });
+
+    // ============================================================
+    //  编辑面板
+    // ============================================================
+    function openEditor(idx) {
+        editingIndex = idx;
+
+        var nameEl  = document.getElementById('cdInputName');
+        var dateEl  = document.getElementById('cdInputDate');
+        var startEl = document.getElementById('cdInputStart');
+        var noteEl  = document.getElementById('cdInputNote');
+
+        if (idx >= 0 && items[idx]) {
+            nameEl.value  = items[idx].name;
+            dateEl.value  = items[idx].target;
+            startEl.value = items[idx].start || '';
+            noteEl.value  = items[idx].note || '';
+            editor.querySelector('h3').textContent = '编辑倒数日';
+        } else {
+            nameEl.value = '';
+            dateEl.value = '';
+            startEl.value = todayStr();
+            noteEl.value = '';
+            editor.querySelector('h3').textContent = '新建倒数日';
+        }
+
+        editor.classList.add('show');
+        setTimeout(function () { nameEl.focus(); }, 120);
+    }
+
+    function closeEditor() {
+        editor.classList.remove('show');
+        editingIndex = -1;
+    }
+
+    document.getElementById('cdCancel').addEventListener('click', closeEditor);
+
+    document.getElementById('cdSave').addEventListener('click', function () {
+        var name  = document.getElementById('cdInputName').value.trim();
+        var date  = document.getElementById('cdInputDate').value.trim();
+        var start = document.getElementById('cdInputStart').value.trim() || todayStr();
+        var note  = document.getElementById('cdInputNote').value.trim();
+
+        if (!name) { document.getElementById('cdInputName').focus(); return; }
+        if (!date) { document.getElementById('cdInputDate').focus(); return; }
+        if (!parseTarget(date)) {
+            alert('日期格式不对，请用 08-09 或 2026-08-09');
+            return;
+        }
+
+        var obj = { name: name, target: date, start: start, note: note };
+
+        if (editingIndex >= 0) {
+            items[editingIndex] = obj;
+        } else {
+            items.push(obj);
+        }
+
+        save();
+        closeEditor();
+        render();
+    });
+
+    // 点击遮罩关闭
+    editor.addEventListener('click', function (e) {
+        if (e.target === editor) closeEditor();
+    });
+
+    // ============================================================
+    //  接入目录 + 返回
+    // ============================================================
+    document.querySelectorAll('.catalog-item').forEach(function (item) {
+        if (item.getAttribute('data-title') === '倒数日') {
+            item.addEventListener('click', function (ev) {
+                ev.stopImmediatePropagation();
+                var sub = document.getElementById('subpage');
+                if (sub) sub.classList.remove('show');
+                page.classList.add('show');
+                render();
+            }, true);
+        }
+    });
+
+    backBtn.addEventListener('click', function () {
+        closeActions();
+        closeEditor();
+        page.classList.remove('show');
+    });
+
+    render();
+})();
+</script>
+<!-- ===== 心情日记 页面补丁 v2 ===== -->
+<style>
+    #moodPage {
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        background: linear-gradient(150deg, var(--color-4) 0%, var(--color-1) 50%, var(--color-2) 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    #moodPage.show { opacity: 1; visibility: visible; }
+
+    .mood-header {
+        flex: 0 0 auto;
+        padding: 2rem 2rem 0.6rem;
+        text-align: center;
+    }
+    .mood-header h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        color: var(--color-3);
+        text-shadow: 0 0 22px rgba(172, 209, 238, 0.55);
+    }
+    .mood-header .mood-sub {
+        margin-top: 0.35rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        color: var(--color-5);
+        opacity: 0.85;
+    }
+
+    /* ---------- 网格 ---------- */
+    .mood-grid {
+        flex: 1 1 auto;
+        width: min(680px, 92vw);
+        margin: 1.2rem auto 3rem;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.85rem;
+    }
+
+    .mood-cell {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1.5px solid rgba(128, 178, 229, 0.45);
+        border-radius: 14px;
+        backdrop-filter: blur(6px);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.25s ease,
+                    border-color 0.25s ease, background 0.25s ease;
+        animation: todoIn 0.4s ease both;
+    }
+    .mood-cell:hover {
+        transform: translateY(-3px) scale(1.04);
+        border-color: var(--color-5);
+        box-shadow: 0 0 18px rgba(248, 194, 218, 0.55);
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .mood-cell:active { transform: scale(0.97); }
+
+    /* 空格子 */
+    .mood-cell.empty {
+        border-style: dashed;
+        background: rgba(255, 255, 255, 0.35);
+    }
+    .mood-cell.empty .cell-plus {
+        font-size: 26px;
+        color: var(--color-3);
+        opacity: 0.6;
+        transition: all 0.25s ease;
+    }
+    .mood-cell.empty:hover .cell-plus {
+        opacity: 1;
+        color: var(--color-5);
+        transform: rotate(90deg);
+    }
+
+    /* 有内容的格子：只显示一个表情 */
+    .cell-emoji {
+        font-size: 2.6rem;
+        line-height: 1;
+        filter: drop-shadow(0 0 8px rgba(248, 194, 218, 0.55));
+        transition: transform 0.25s ease;
+    }
+    .mood-cell:hover .cell-emoji {
+        transform: scale(1.12);
+    }
+
+    /* 右上角小日期 */
+    .cell-date {
+        position: absolute;
+        top: 4px;
+        right: 7px;
+        font-size: 0.6rem;
+        color: var(--color-3);
+        opacity: 0.65;
+        letter-spacing: 0.05em;
+    }
+
+    /* ---------- 返回 ---------- */
+    .mood-back {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 10002;
+        padding: 0.55rem 1.6rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        color: var(--color-3);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1.5px solid var(--color-3);
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s ease;
+    }
+    .mood-back:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(128, 178, 229, 0.6);
+        transform: translateX(-3px);
+    }
+
+    /* ---------- 查看 / 编辑面板 ---------- */
+    .mood-editor {
+        position: fixed;
+        inset: 0;
+        z-index: 10008;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(214, 226, 240, 0.55);
+        backdrop-filter: blur(6px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        padding: 1rem;
+    }
+    .mood-editor.show { opacity: 1; visibility: visible; }
+
+    .mood-editor-box {
+        width: min(420px, 94vw);
+        padding: 1.4rem 1.5rem 1.2rem;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 14px 50px rgba(128, 178, 229, 0.4);
+        transform: translateY(12px);
+        transition: transform 0.3s ease;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    .mood-editor.show .mood-editor-box { transform: translateY(0); }
+
+    .mood-editor-box h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        color: var(--color-3);
+        margin-bottom: 0.9rem;
+        text-align: center;
+    }
+
+    /* ---------- 查看模式 ---------- */
+    .mood-view {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.6rem 0 0.4rem;
+    }
+    .mood-view .view-emoji {
+        font-size: 4rem;
+        line-height: 1;
+        filter: drop-shadow(0 0 14px rgba(248, 194, 218, 0.6));
+    }
+    .mood-view .view-date {
+        font-size: 0.78rem;
+        letter-spacing: 0.16em;
+        color: var(--color-5);
+        opacity: 0.9;
+    }
+    .mood-view .view-note {
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        background: linear-gradient(135deg, var(--color-1), var(--color-4));
+        border-radius: 12px;
+        font-size: 0.9rem;
+        line-height: 1.75;
+        color: #4a5a6a;
+        white-space: pre-wrap;
+        word-break: break-word;
+        min-height: 60px;
+        text-align: left;
+    }
+    .mood-view .view-note.empty-note {
+        color: var(--color-3);
+        opacity: 0.6;
+        font-style: italic;
+    }
+
+    /* ---------- 编辑模式 ---------- */
+    .mood-picker {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.3rem;
+        padding: 0.6rem 0.5rem;
+        background: linear-gradient(135deg, var(--color-1), var(--color-4));
+        border-radius: 14px;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    .mood-opt {
+        flex: 1 0 18%;
+        font-size: 1.6rem;
+        line-height: 1;
+        text-align: center;
+        padding: 0.35rem 0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.22s ease;
+        user-select: none;
+    }
+    .mood-opt:hover { transform: translateY(-3px) scale(1.15); }
+    .mood-opt.active {
+        background: #fff;
+        box-shadow: 0 0 12px rgba(248, 194, 218, 0.8),
+                    0 0 0 2px var(--color-5);
+        transform: translateY(-2px) scale(1.15);
+    }
+
+    .mood-note-wrap label {
+        display: block;
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        color: var(--color-5);
+        margin-bottom: 0.35rem;
+    }
+    .mood-note-wrap textarea {
+        width: 100%;
+        min-height: 110px;
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+        line-height: 1.7;
+        color: #4a5a6a;
+        border: 1px solid rgba(128, 178, 229, 0.5);
+        border-radius: 12px;
+        outline: none;
+        resize: vertical;
+        background: #fff;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+    .mood-note-wrap textarea:focus {
+        border-color: var(--color-5);
+        box-shadow: 0 0 8px rgba(248, 194, 218, 0.5);
+    }
+
+    /* ---------- 按钮 ---------- */
+    .mood-editor-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .mood-editor-actions button {
+        flex: 1;
+        padding: 0.58rem 0;
+        font-size: 0.88rem;
+        letter-spacing: 0.14em;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.22s ease;
+    }
+    .mood-edit {
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        box-shadow: 0 0 14px rgba(128, 178, 229, 0.4);
+    }
+    .mood-edit:hover { box-shadow: 0 0 22px rgba(248, 194, 218, 0.7); }
+    .mood-save {
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        box-shadow: 0 0 14px rgba(128, 178, 229, 0.4);
+    }
+    .mood-save:hover { box-shadow: 0 0 22px rgba(248, 194, 218, 0.7); }
+    .mood-del {
+        color: #e66;
+        background: #fdecec;
+    }
+    .mood-del:hover { background: #f8d0d0; }
+    .mood-cancel {
+        color: #6a7a8a;
+        background: #eef2f7;
+    }
+    .mood-cancel:hover { background: #e0e8f2; }
+
+    @media (max-width: 600px) {
+        .mood-header h2 { font-size: 1.4rem; }
+        .mood-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+        .mood-back { top: 1rem; left: 1rem; padding: 0.45rem 1.2rem; font-size: 0.8rem; }
+        .mood-opt { font-size: 1.35rem; flex: 1 0 18%; }
+        .cell-emoji { font-size: 2rem; }
+    }
+</style>
+
+<div id="moodPage">
+    <button class="mood-back" id="moodBack">← 返 回</button>
+
+    <div class="mood-header">
+        <h2>心 情 日 记</h2>
+        <div class="mood-sub">· MOOD DIARY · 点格子看今天的心情 ·</div>
+    </div>
+
+    <div class="mood-grid" id="moodGrid"></div>
+</div>
+
+<!-- 查看 / 编辑面板 -->
+<div class="mood-editor" id="moodEditor">
+    <div class="mood-editor-box">
+        <h3 id="moodEditorTitle">今天的心情</h3>
+        <div id="moodEditorBody"></div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var STORAGE_KEY = 'mood_diary_data_v1';
+    var CELL_COUNT  = 16;
+
+    var page    = document.getElementById('moodPage');
+    var gridEl  = document.getElementById('moodGrid');
+    var backBtn = document.getElementById('moodBack');
+    var editor  = document.getElementById('moodEditor');
+    var titleEl = document.getElementById('moodEditorTitle');
+    var bodyEl  = document.getElementById('moodEditorBody');
+
+    // 小黄豆表情库
+    var MOODS = [
+        { emoji: '😊', label: '开心' },
+        { emoji: '😄', label: '超开心' },
+        { emoji: '😌', label: '平静' },
+        { emoji: '🥰', label: '幸福' },
+        { emoji: '😐', label: '无感' },
+        { emoji: '😔', label: '难过' },
+        { emoji: '😭', label: '想哭' },
+        { emoji: '😡', label: '生气' },
+        { emoji: '😴', label: '累了' },
+        { emoji: '🤔', label: '思考' }
+    ];
+
+    // records[i] = { mood, note, date } 或 null
+    var records = load();
+
+    var editingIndex = -1;
+    var currentMood  = 0;
+
+    // ============================================================
+    //  持久化
+    // ============================================================
+    function load() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return [];
+            var arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+        } catch (e) { return []; }
+    }
+    function save() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); } catch (e) {}
+    }
+
+    // ============================================================
+    //  渲染网格（只显示表情）
+    // ============================================================
+    function render() {
+        gridEl.innerHTML = '';
+
+        for (var i = 0; i < CELL_COUNT; i++) {
+            var rec = records[i];
+            var cell = document.createElement('div');
+            cell.className = 'mood-cell' + (rec ? '' : ' empty');
+            cell.style.animationDelay = (i * 0.03) + 's';
+
+            if (rec) {
+                cell.innerHTML =
+                    '<div class="cell-date">' + escapeHtml(rec.date || '') + '</div>' +
+                    '<div class="cell-emoji">' + MOODS[rec.mood].emoji + '</div>';
+            } else {
+                cell.innerHTML = '<div class="cell-plus">＋</div>';
+            }
+
+            (function (idx) {
+                cell.addEventListener('click', function () { openPanel(idx); });
+            })(i);
+
+            gridEl.appendChild(cell);
+        }
+    }
+
+    // ============================================================
+    //  打开面板：有记录 → 查看模式；无记录 → 直接编辑模式
+    // ============================================================
+    function openPanel(idx) {
+        editingIndex = idx;
+        var rec = records[idx];
+
+        if (rec) {
+            renderViewMode(rec);
+        } else {
+            currentMood = 0;
+            renderEditMode('');
+        }
+
+        editor.classList.add('show');
+    }
+
+    // ---------- 查看模式 ----------
+    function renderViewMode(rec) {
+        titleEl.textContent = '这一天';
+        var noteText = rec.note && rec.note.trim() ? rec.note : '（这一天没写日记）';
+        var isEmpty  = !(rec.note && rec.note.trim());
+
+        bodyEl.innerHTML =
+            '<div class="mood-view">' +
+                '<div class="view-emoji">' + MOODS[rec.mood].emoji + '</div>' +
+                '<div class="view-date">' + escapeHtml(rec.date || '') + ' · ' + MOODS[rec.mood].label + '</div>' +
+                '<div class="view-note' + (isEmpty ? ' empty-note' : '') + '"></div>' +
+            '</div>' +
+            '<div class="mood-editor-actions">' +
+                '<button class="mood-cancel" id="moodClose">关 闭</button>' +
+                '<button class="mood-edit" id="moodEdit">编 辑</button>' +
+            '</div>';
+
+        // 日记内容用 textContent，保留换行
+        bodyEl.querySelector('.view-note').textContent = noteText;
+
+        bodyEl.querySelector('#moodClose').addEventListener('click', closeEditor);
+        bodyEl.querySelector('#moodEdit').addEventListener('click', function () {
+            currentMood = rec.mood;
+            renderEditMode(rec.note || '');
+        });
+    }
+
+    // ---------- 编辑模式 ----------
+    function renderEditMode(note) {
+        titleEl.textContent = records[editingIndex] ? '编辑心情' : '今天的心情';
+
+        bodyEl.innerHTML =
+            '<div class="mood-picker" id="moodPicker"></div>' +
+            '<div class="mood-note-wrap">' +
+                '<label>写点什么……</label>' +
+                '<textarea id="moodNote" placeholder="今天发生了什么？"></textarea>' +
+            '</div>' +
+            '<div class="mood-editor-actions">' +
+                '<button class="mood-del" id="moodDel">删 除</button>' +
+                '<button class="mood-cancel" id="moodCancel">取 消</button>' +
+                '<button class="mood-save" id="moodSave">保 存</button>' +
+            '</div>';
+
+        var picker = bodyEl.querySelector('#moodPicker');
+        MOODS.forEach(function (m, i) {
+            var opt = document.createElement('div');
+            opt.className = 'mood-opt' + (i === currentMood ? ' active' : '');
+            opt.textContent = m.emoji;
+            opt.title = m.label;
+            opt.addEventListener('click', function () {
+                currentMood = i;
+                picker.querySelectorAll('.mood-opt').forEach(function (el, j) {
+                    el.classList.toggle('active', j === i);
+                });
+            });
+            picker.appendChild(opt);
+        });
+
+        var noteEl = bodyEl.querySelector('#moodNote');
+        noteEl.value = note || '';
+        setTimeout(function () { noteEl.focus(); }, 120);
+
+        bodyEl.querySelector('#moodCancel').addEventListener('click', function () {
+            // 如果这条已经有记录，就退回查看模式；否则直接关闭
+            if (records[editingIndex]) {
+                renderViewMode(records[editingIndex]);
+            } else {
+                closeEditor();
+            }
+        });
+
+        bodyEl.querySelector('#moodDel').addEventListener('click', function () {
+            if (editingIndex >= 0 && records[editingIndex]) {
+                records.splice(editingIndex, 1);
+                while (records.length < CELL_COUNT) records.push(null);
+                save();
+            }
+            closeEditor();
+            render();
+        });
+
+        bodyEl.querySelector('#moodSave').addEventListener('click', function () {
+            var note = noteEl.value.trim();
+
+            var d = new Date();
+            var mm = String(d.getMonth() + 1).padStart(2, '0');
+            var dd = String(d.getDate()).padStart(2, '0');
+            var today = mm + '-' + dd;
+
+            var obj = {
+                mood: currentMood,
+                note: note,
+                date: (records[editingIndex] && records[editingIndex].date) || today
+            };
+
+            if (editingIndex >= 0 && editingIndex < CELL_COUNT) {
+                records[editingIndex] = obj;
+            } else {
+                var empty = -1;
+                for (var i = 0; i < CELL_COUNT; i++) {
+                    if (!records[i]) { empty = i; break; }
+                }
+                if (empty === -1) empty = CELL_COUNT - 1;
+                records[empty] = obj;
+            }
+
+            save();
+            closeEditor();
+            render();
+        });
+    }
+
+    function closeEditor() {
+        editor.classList.remove('show');
+        editingIndex = -1;
+    }
+
+    // 点遮罩关闭
+    editor.addEventListener('click', function (e) {
+        if (e.target === editor) closeEditor();
+    });
+
+    // ============================================================
+    //  接入目录 + 返回
+    // ============================================================
+    document.querySelectorAll('.catalog-item').forEach(function (item) {
+        if (item.getAttribute('data-title') === '心情日记') {
+            item.addEventListener('click', function (ev) {
+                ev.stopImmediatePropagation();
+                var sub = document.getElementById('subpage');
+                if (sub) sub.classList.remove('show');
+                page.classList.add('show');
+                render();
+            }, true);
+        }
+    });
+
+    backBtn.addEventListener('click', function () {
+        closeEditor();
+        page.classList.remove('show');
+    });
+
+    function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, function (c) {
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+        });
+    }
+
+    render();
+})();
+</script>
+<!-- ===== 心情日记：30 格 + 月份切换 补丁 ===== -->
+<style>
+    /* 月份切换条 */
+    .mood-month-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.2rem;
+        margin: 0.4rem auto 1rem;
+        width: min(680px, 92vw);
+    }
+    .mood-month-bar button {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1.5px solid var(--color-3);
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--color-3);
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        font-family: inherit;
+    }
+    .mood-month-bar button:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 14px rgba(128, 178, 229, 0.6);
+    }
+    .mood-month-bar button:active { transform: scale(0.92); }
+
+    .mood-month-label {
+        font-size: 1.05rem;
+        letter-spacing: 0.16em;
+        color: var(--color-3);
+        min-width: 140px;
+        text-align: center;
+        text-shadow: 0 0 14px rgba(172, 209, 238, 0.5);
+    }
+    .mood-month-label .small {
+        display: block;
+        font-size: 0.68rem;
+        letter-spacing: 0.22em;
+        color: var(--color-5);
+        margin-top: 2px;
+        opacity: 0.85;
+    }
+
+    /* 30 天用 6 列 × 5 行排布，小屏自动变 5 列 */
+    .mood-grid {
+        grid-template-columns: repeat(6, 1fr) !important;
+    }
+    @media (max-width: 720px) {
+        .mood-grid { grid-template-columns: repeat(5, 1fr) !important; }
+    }
+    @media (max-width: 480px) {
+        .mood-grid { grid-template-columns: repeat(5, 1fr) !important; }
+        .cell-emoji { font-size: 1.6rem !important; }
+        .mood-month-label { font-size: 0.92rem; min-width: 110px; }
+    }
+</style>
+
+<script>
+(function () {
+    // 等原来的心情日记脚本渲染完毕后再接管
+    function init() {
+        var gridEl  = document.getElementById('moodGrid');
+        var page    = document.getElementById('moodPage');
+        if (!gridEl || !page) return;
+
+        var STORAGE_KEY = 'mood_diary_data_v1';
+        var MOODS = [
+            { emoji: '😊' }, { emoji: '😄' }, { emoji: '😌' }, { emoji: '🥰' },
+            { emoji: '😐' }, { emoji: '😔' }, { emoji: '😭' }, { emoji: '😡' },
+            { emoji: '😴' }, { emoji: '🤔' }
+        ];
+        var DAYS = 30;
+
+        // 当前显示的月份（默认今天所在月）
+        var now = new Date();
+        var viewYear  = now.getFullYear();
+        var viewMonth = now.getMonth();   // 0~11
+
+        // ---------- 读取原有记录（保持兼容） ----------
+        // 新格式：{ "2026-09": [ {mood, note, date}, ... 30 项或稀疏数组 ] }
+        // 旧格式：数组 16 项 → 迁移到 "YYYY-MM" 键下
+        var store = loadStore();
+
+        // ---------- 在 header 之后插入月份切换条 ----------
+        var header = page.querySelector('.mood-header');
+        var bar = document.createElement('div');
+        bar.className = 'mood-month-bar';
+        bar.innerHTML =
+            '<button id="moodPrevMonth" title="上个月">‹</button>' +
+            '<div class="mood-month-label" id="moodMonthLabel"></div>' +
+            '<button id="moodNextMonth" title="下个月">›</button>';
+        header.parentNode.insertBefore(bar, header.nextSibling);
+
+        var labelEl = bar.querySelector('#moodMonthLabel');
+
+        bar.querySelector('#moodPrevMonth').addEventListener('click', function () {
+            viewMonth--;
+            if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+            refresh();
+        });
+        bar.querySelector('#moodNextMonth').addEventListener('click', function () {
+            viewMonth++;
+            if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+            refresh();
+        });
+
+        // ---------- 接管网格渲染 ----------
+        function monthKey() {
+            return viewYear + '-' + String(viewMonth + 1).padStart(2, '0');
+        }
+
+        function currentMonthData() {
+            var key = monthKey();
+            if (!store[key]) {
+                // 初始化 30 个 null
+                store[key] = new Array(DAYS).fill(null);
+            }
+            // 补齐长度
+            while (store[key].length < DAYS) store[key].push(null);
+            return store[key];
+        }
+
+        function renderGrid() {
+            var data = currentMonthData();
+            gridEl.innerHTML = '';
+
+            for (var i = 0; i < DAYS; i++) {
+                var rec = data[i];
+                var cell = document.createElement('div');
+                cell.className = 'mood-cell' + (rec ? '' : ' empty');
+
+                if (rec) {
+                    cell.innerHTML =
+                        '<div class="cell-date">' + String(i + 1).padStart(2, '0') + '</div>' +
+                        '<div class="cell-emoji">' + (MOODS[rec.mood] ? MOODS[rec.mood].emoji : '😊') + '</div>';
+                } else {
+                    cell.innerHTML =
+                        '<div class="cell-date">' + String(i + 1).padStart(2, '0') + '</div>' +
+                        '<div class="cell-plus">＋</div>';
+                }
+
+                (function (idx) {
+                    cell.addEventListener('click', function () {
+                        openPanel(idx);
+                    });
+                })(i);
+
+                gridEl.appendChild(cell);
+            }
+        }
+
+        function refresh() {
+            labelEl.innerHTML =
+                viewYear + ' 年 ' + (viewMonth + 1) + ' 月' +
+                '<span class="small">· ' + monthKey() + ' ·</span>';
+            renderGrid();
+        }
+
+        // ---------- 面板：沿用原来打开逻辑，但数据源换成当前月 ----------
+        // 原脚本里 openPanel 是闭包里的，拿不到，这里自己实现一套等价逻辑
+        var editor  = document.getElementById('moodEditor');
+        var titleEl = document.getElementById('moodEditorTitle');
+        var bodyEl  = document.getElementById('moodEditorBody');
+
+        function openPanel(idx) {
+            var data = currentMonthData();
+            var rec = data[idx];
+
+            if (rec) {
+                renderViewMode(rec, idx);
+            } else {
+                renderEditMode('', idx, 0);
+            }
+            editor.classList.add('show');
+        }
+
+        function renderViewMode(rec, idx) {
+            titleEl.textContent = '这一天';
+            var noteText = rec.note && rec.note.trim() ? rec.note : '（这一天没写日记）';
+            var isEmpty  = !(rec.note && rec.note.trim());
+
+            bodyEl.innerHTML =
+                '<div class="mood-view">' +
+                    '<div class="view-emoji">' + (MOODS[rec.mood] ? MOODS[rec.mood].emoji : '😊') + '</div>' +
+                    '<div class="view-date">' + monthKey() + ' · ' + String(idx + 1).padStart(2, '0') + ' 日</div>' +
+                    '<div class="view-note' + (isEmpty ? ' empty-note' : '') + '"></div>' +
+                '</div>' +
+                '<div class="mood-editor-actions">' +
+                    '<button class="mood-cancel" id="moodClose">关 闭</button>' +
+                    '<button class="mood-edit" id="moodEdit">编 辑</button>' +
+                '</div>';
+
+            bodyEl.querySelector('.view-note').textContent = noteText;
+
+            bodyEl.querySelector('#moodClose').addEventListener('click', closeEditor);
+            bodyEl.querySelector('#moodEdit').addEventListener('click', function () {
+                renderEditMode(rec.note || '', idx, rec.mood);
+            });
+        }
+
+        function renderEditMode(note, idx, moodIdx) {
+            titleEl.textContent = '编辑心情';
+
+            var pickerHtml = MOODS.map(function (m, i) {
+                return '<div class="mood-opt' + (i === moodIdx ? ' active' : '') +
+                       '" data-i="' + i + '">' + m.emoji + '</div>';
+            }).join('');
+
+            bodyEl.innerHTML =
+                '<div class="mood-picker" id="moodPicker">' + pickerHtml + '</div>' +
+                '<div class="mood-note-wrap">' +
+                    '<label>写点什么……</label>' +
+                    '<textarea id="moodNote" placeholder="今天发生了什么？"></textarea>' +
+                '</div>' +
+                '<div class="mood-editor-actions">' +
+                    '<button class="mood-del" id="moodDel">删 除</button>' +
+                    '<button class="mood-cancel" id="moodCancel">取 消</button>' +
+                    '<button class="mood-save" id="moodSave">保 存</button>' +
+                '</div>';
+
+            var currentMood = moodIdx;
+            var picker = bodyEl.querySelector('#moodPicker');
+            picker.addEventListener('click', function (e) {
+                var opt = e.target.closest('.mood-opt');
+                if (!opt) return;
+                currentMood = parseInt(opt.getAttribute('data-i'), 10);
+                picker.querySelectorAll('.mood-opt').forEach(function (el) {
+                    el.classList.toggle('active', el === opt);
+                });
+            });
+
+            var noteEl = bodyEl.querySelector('#moodNote');
+            noteEl.value = note || '';
+            setTimeout(function () { noteEl.focus(); }, 120);
+
+            bodyEl.querySelector('#moodCancel').addEventListener('click', function () {
+                var d = currentMonthData();
+                if (d[idx]) renderViewMode(d[idx], idx);
+                else closeEditor();
+            });
+
+            bodyEl.querySelector('#moodDel').addEventListener('click', function () {
+                var d = currentMonthData();
+                d[idx] = null;
+                saveStore();
+                closeEditor();
+                renderGrid();
+            });
+
+            bodyEl.querySelector('#moodSave').addEventListener('click', function () {
+                var d = currentMonthData();
+                d[idx] = {
+                    mood: currentMood,
+                    note: noteEl.value.trim(),
+                    date: String(idx + 1).padStart(2, '0')
+                };
+                saveStore();
+                closeEditor();
+                renderGrid();
+            });
+        }
+
+        function closeEditor() {
+            editor.classList.remove('show');
+        }
+
+        // 遮罩点击关闭（覆盖原来的监听，用捕获阶段先执行一次）
+        editor.addEventListener('click', function (e) {
+            if (e.target === editor) closeEditor();
+        }, true);
+
+        // ---------- 存储 ----------
+        function loadStore() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return {};
+                var parsed = JSON.parse(raw);
+
+                // 旧格式：数组 → 迁移到当前月
+                if (Array.isArray(parsed)) {
+                    var key = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+                    var arr = new Array(DAYS).fill(null);
+                    parsed.forEach(function (r, i) {
+                        if (i < DAYS) arr[i] = r;
+                    });
+                    var migrated = {};
+                    migrated[key] = arr;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+                    return migrated;
+                }
+                if (typeof parsed === 'object' && parsed !== null) return parsed;
+                return {};
+            } catch (e) { return {}; }
+        }
+
+        function saveStore() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+            } catch (e) {}
+        }
+
+        // ---------- 拦截目录入口，先刷新再打开 ----------
+        document.querySelectorAll('.catalog-item').forEach(function (item) {
+            if (item.getAttribute('data-title') === '心情日记') {
+                item.addEventListener('click', function () {
+                    setTimeout(refresh, 0);
+                }, true);
+            }
+        });
+
+        // 页面首次显示时刷新
+        var obs = new MutationObserver(function () {
+            if (page.classList.contains('show')) {
+                refresh();
+            }
+        });
+        obs.observe(page, { attributes: true, attributeFilter: ['class'] });
+
+        // 初始化
+        refresh();
+    }
+
+    setTimeout(init, 350);
+})();
+</script>
+<!-- ===== 悄悄话 页面（两本独立日记） ===== -->
+<style>
+    #whisperPage {
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        background: linear-gradient(150deg, var(--color-4) 0%, var(--color-1) 50%, var(--color-2) 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    #whisperPage.show { opacity: 1; visibility: visible; }
+
+    /* ---------- 标题 ---------- */
+    .wp-header {
+        flex: 0 0 auto;
+        padding: 2rem 2rem 0.6rem;
+        text-align: center;
+    }
+    .wp-header h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+        color: var(--color-3);
+        text-shadow: 0 0 22px rgba(172, 209, 238, 0.55);
+    }
+    .wp-header .wp-sub {
+        margin-top: 0.35rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        color: var(--color-5);
+        opacity: 0.85;
+    }
+
+    /* ---------- 两本日记的容器 ---------- */
+    .wp-book {
+        flex: 1 1 auto;
+        width: min(920px, 94vw);
+        margin: 1.2rem auto 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.4rem;
+        align-items: stretch;
+    }
+
+    /* ---------- 单本日记 ---------- */
+    .wp-diary {
+        position: relative;
+        min-height: 340px;
+        padding: 2.6rem 1.4rem 2.6rem;
+        background: #fffdf8;
+        border-radius: 10px;
+        box-shadow:
+            0 8px 28px rgba(128, 178, 229, 0.28),
+            0 0 0 1px rgba(128, 178, 229, 0.22) inset;
+        background-image:
+            repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent 30px,
+                rgba(128, 178, 229, 0.28) 30px,
+                rgba(128, 178, 229, 0.28) 31px
+            );
+        background-position: 0 12px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 图钉装饰 */
+    .wp-pin {
+        position: absolute;
+        top: -22px;
+        left: -22px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(128, 178, 229, 0.4),
+                    0 0 0 3px #fff,
+                    0 0 0 4px rgba(248, 194, 218, 0.6);
+        transform: rotate(-8deg);
+        z-index: 3;
+        pointer-events: none;
+    }
+    .wp-pin img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* 每本日记的标题（左右分别显示"左边本" / "右边本"，可自行改） */
+    .wp-diary-label {
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.72rem;
+        letter-spacing: 0.25em;
+        color: var(--color-3);
+        opacity: 0.55;
+        pointer-events: none;
+    }
+
+    /* 可编辑区 */
+    .wp-text {
+        flex: 1 1 auto;
+        outline: none;
+        font-size: 1rem;
+        line-height: 31px;
+        color: #4a5a6a;
+        letter-spacing: 0.06em;
+        word-break: break-word;
+        white-space: pre-wrap;
+        min-height: 240px;
+        padding: 0 4px;
+        caret-color: var(--color-5);
+        font-family: inherit;
+    }
+    .wp-text:empty::before {
+        content: attr(data-placeholder);
+        color: var(--color-3);
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    .wp-text:focus {
+        background: rgba(252, 225, 240, 0.18);
+    }
+
+    /* 页码 / 翻页 */
+    .wp-footer {
+        position: absolute;
+        right: 12px;
+        bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        letter-spacing: 0.1em;
+        color: var(--color-3);
+        user-select: none;
+    }
+    .wp-page-num {
+        font-size: 0.78rem;
+        color: var(--color-3);
+        opacity: 0.85;
+    }
+    .wp-next {
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 6px;
+        transition: all 0.22s ease;
+        color: var(--color-5);
+        font-weight: 600;
+    }
+    .wp-next:hover {
+        background: var(--color-4);
+        transform: translateX(2px);
+    }
+    .wp-next:active { transform: scale(0.92); }
+
+    /* ---------- 底部保存条 ---------- */
+    .wp-actions {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        padding: 0 1rem 2.4rem;
+    }
+    .wp-actions button {
+        padding: 0.65rem 2.4rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.25s ease;
+    }
+    .wp-save {
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        box-shadow: 0 0 16px rgba(128, 178, 229, 0.45);
+    }
+    .wp-save:hover {
+        box-shadow: 0 0 26px rgba(248, 194, 218, 0.75);
+        transform: translateY(-2px);
+    }
+    .wp-save:active { transform: scale(0.97); }
+
+    /* ---------- 返回 ---------- */
+    .wp-back {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 10002;
+        padding: 0.55rem 1.6rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        color: var(--color-3);
+        background: rgba(255, 255, 255, 0.75);
+        border: 1.5px solid var(--color-3);
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(6px);
+        transition: all 0.3s ease;
+    }
+    .wp-back:hover {
+        background: var(--color-3);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(128, 178, 229, 0.6);
+        transform: translateX(-3px);
+    }
+
+    /* ---------- 提示 ---------- */
+    .wp-toast {
+        position: fixed;
+        left: 50%;
+        bottom: 2rem;
+        transform: translateX(-50%) translateY(16px);
+        padding: 0.55rem 1.5rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.14em;
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-3), var(--color-5));
+        border-radius: 999px;
+        box-shadow: 0 6px 24px rgba(128, 178, 229, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 10010;
+    }
+    .wp-toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 700px) {
+        .wp-header h2 { font-size: 1.4rem; }
+        .wp-book {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+        .wp-diary { min-height: 260px; padding: 2.4rem 1.1rem 2.4rem; }
+        .wp-back { top: 1rem; left: 1rem; padding: 0.45rem 1.2rem; font-size: 0.8rem; }
+        .wp-pin { width: 46px; height: 46px; top: -18px; left: -18px; }
+    }
+</style>
+
+<div id="whisperPage">
+    <button class="wp-back" id="wpBack">← 返 回</button>
+
+    <div class="wp-header">
+        <h2>悄 悄 话</h2>
+        <div class="wp-sub">· WHISPER · 两本日记，各自记录 ·</div>
+    </div>
+
+    <div class="wp-book" id="wpBook">
+        <!-- 左本 -->
+        <div class="wp-diary" data-book="0">
+            <div class="wp-pin">
+                <img src="https://img.heliar.top/file/1772081928940_retouch_2026022423142267.jpg" alt="pin">
+            </div>
+            <div class="wp-diary-label">· A ·</div>
+            <div class="wp-text" contenteditable="true" data-placeholder="左边这本……"></div>
+            <div class="wp-footer">
+                <span class="wp-page-num" data-role="num">1 / 1</span>
+                <span class="wp-next" data-role="next" title="下一页">→</span>
+            </div>
+        </div>
+
+        <!-- 右本 -->
+        <div class="wp-diary" data-book="1">
+            <div class="wp-pin">
+                <img src="https://img.heliar.top/file/1772081928940_retouch_2026022423142267.jpg" alt="pin">
+            </div>
+            <div class="wp-diary-label">· B ·</div>
+            <div class="wp-text" contenteditable="true" data-placeholder="右边这本……"></div>
+            <div class="wp-footer">
+                <span class="wp-page-num" data-role="num">1 / 1</span>
+                <span class="wp-next" data-role="next" title="下一页">→</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="wp-actions">
+        <button class="wp-save" id="wpSave">保 存</button>
+    </div>
+</div>
+
+<div class="wp-toast" id="wpToast"></div>
+
+<script>
+(function () {
+    var STORAGE_KEY = 'whisper_data_v2';
+
+    var page    = document.getElementById('whisperPage');
+    var book    = document.getElementById('wpBook');
+    var backBtn = document.getElementById('wpBack');
+    var saveBtn = document.getElementById('wpSave');
+    var toast   = document.getElementById('wpToast');
+
+    // ============================================================
+    //  数据模型
+    //  books = [
+    //     { pages: [ {text:''}, ... ], current: 0 },   // 左本
+    //     { pages: [ {text:''}, ... ], current: 0 }    // 右本
+    //  ]
+    // ============================================================
+    var INITIAL_PAGES = 3;   // 每本日记初始 3 页
+
+    var books = loadBooks();
+
+    function loadBooks() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                var obj = JSON.parse(raw);
+                if (obj && Array.isArray(obj.books) && obj.books.length === 2) {
+                    return obj.books;
+                }
+            }
+        } catch (e) {}
+
+        // 初始化：两本，各自 3 页
+        return [
+            { pages: newPages(INITIAL_PAGES), current: 0 },
+            { pages: newPages(INITIAL_PAGES), current: 0 }
+        ];
+    }
+
+    function newPages(n) {
+        var arr = [];
+        for (var i = 0; i < n; i++) arr.push({ text: '' });
+        return arr;
+    }
+
+    function saveBooks() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ books: books }));
+        } catch (e) {}
+    }
+
+    // ============================================================
+    //  渲染某一本日记
+    // ============================================================
+    function renderBook(bookIndex) {
+        var diary = book.querySelector('.wp-diary[data-book="' + bookIndex + '"]');
+        if (!diary) return;
+
+        var b = books[bookIndex];
+        var total = b.pages.length;
+        if (b.current >= total) b.current = 0;
+
+        var textEl = diary.querySelector('.wp-text');
+        var numEl  = diary.querySelector('[data-role="num"]');
+        var nextEl = diary.querySelector('[data-role="next"]');
+
+        // 填入文字
+        textEl.textContent = b.pages[b.current].text || '';
+        // 页码
+        numEl.textContent = (b.current + 1) + ' / ' + total;
+
+        // 删除旧监听（用替换节点方式避免重复绑定）
+        var newNext = nextEl.cloneNode(true);
+        nextEl.parentNode.replaceChild(newNext, nextEl);
+
+        newNext.addEventListener('click', function () {
+            // 先同步当前内容
+            syncBook(bookIndex);
+
+            var bb = books[bookIndex];
+
+            // 到最后一页时自动新增一页
+            if (bb.current === bb.pages.length - 1) {
+                bb.pages.push({ text: '' });
+            }
+            bb.current = (bb.current + 1) % bb.pages.length;
+            renderBook(bookIndex);
+        });
+
+        // 删除旧的 text 监听（同样用替换）
+        var newText = textEl.cloneNode(false);
+        newText.className = textEl.className;
+        newText.setAttribute('contenteditable', 'true');
+        newText.setAttribute('data-placeholder', textEl.getAttribute('data-placeholder') || '');
+        newText.textContent = b.pages[b.current].text || '';
+        textEl.parentNode.replaceChild(newText, textEl);
+
+        newText.addEventListener('input', function () {
+            books[bookIndex].pages[books[bookIndex].current].text = newText.innerText;
+        });
+
+        newText.addEventListener('paste', function (e) {
+            e.preventDefault();
+            var txt = (e.clipboardData || window.clipboardData).getData('text');
+            document.execCommand('insertText', false, txt);
+        });
+    }
+
+    // 把 DOM 里的内容同步回内存
+    function syncBook(bookIndex) {
+        var diary = book.querySelector('.wp-diary[data-book="' + bookIndex + '"]');
+        if (!diary) return;
+        var textEl = diary.querySelector('.wp-text');
+        var b = books[bookIndex];
+        b.pages[b.current].text = textEl.innerText;
+    }
+
+    function syncAll() {
+        syncBook(0);
+        syncBook(1);
+    }
+
+    function renderAll() {
+        renderBook(0);
+        renderBook(1);
+    }
+
+    // ============================================================
+    //  保存
+    // ============================================================
+    saveBtn.addEventListener('click', function () {
+        syncAll();
+        saveBooks();
+        showToast('已保存 ♥');
+    });
+
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(function () {
+            toast.classList.remove('show');
+        }, 1800);
+    }
+
+    // ============================================================
+    //  接入目录 + 返回
+    // ============================================================
+    document.querySelectorAll('.catalog-item').forEach(function (item) {
+        if (item.getAttribute('data-title') === '悄悄话') {
+            item.addEventListener('click', function (ev) {
+                ev.stopImmediatePropagation();
+                var sub = document.getElementById('subpage');
+                if (sub) sub.classList.remove('show');
+                page.classList.add('show');
+                renderAll();
+            }, true);
+        }
+    });
+
+    backBtn.addEventListener('click', function () {
+        syncAll();
+        saveBooks();
+        page.classList.remove('show');
+    });
+
+    // 首次渲染
+    renderAll();
+})();
+</script>
+<!-- ===== 悄悄话：上一页 + 目录 补丁 ===== -->
+<style>
+    /* ---------- 底部工具条重排 ---------- */
+    #whisperPage .wp-footer {
+        left: 12px;
+        right: 12px;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    /* 目录按钮（靠左） */
+    #whisperPage .wp-catalog-btn {
+        margin-right: auto;
+        cursor: pointer;
+        padding: 3px 9px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        color: var(--color-3);
+        border: 1px solid rgba(128, 178, 229, 0.45);
+        transition: all 0.22s ease;
+        user-select: none;
+    }
+    #whisperPage .wp-catalog-btn:hover {
+        background: var(--color-1);
+        border-color: var(--color-2);
+        color: var(--color-5);
+    }
+    #whisperPage .wp-catalog-btn:active { transform: scale(0.95); }
+
+    /* 上一页按钮 */
+    #whisperPage .wp-prev {
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 6px;
+        transition: all 0.22s ease;
+        color: var(--color-5);
+        font-weight: 600;
+    }
+    #whisperPage .wp-prev:hover {
+        background: var(--color-4);
+        transform: translateX(-2px);
+    }
+    #whisperPage .wp-prev:active { transform: scale(0.92); }
+
+    /* ---------- 目录面板 ---------- */
+    #whisperPage .wp-catalog {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 253, 248, 0.98);
+        border-radius: 10px;
+        padding: 1rem 0.9rem;
+        display: flex;
+        flex-direction: column;
+        z-index: 5;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    #whisperPage .wp-catalog.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #whisperPage .wp-catalog-title {
+        font-size: 0.82rem;
+        letter-spacing: 0.24em;
+        color: var(--color-3);
+        text-align: center;
+        padding-bottom: 0.55rem;
+        margin-bottom: 0.6rem;
+        border-bottom: 1.5px dashed rgba(128, 178, 229, 0.4);
+    }
+
+    #whisperPage .wp-catalog-list {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.28rem;
+        padding-right: 2px;
+    }
+    #whisperPage .wp-catalog-list::-webkit-scrollbar { width: 6px; }
+    #whisperPage .wp-catalog-list::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--color-3), var(--color-5));
+        border-radius: 999px;
+    }
+    #whisperPage .wp-catalog-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #whisperPage .wp-catalog-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.42rem 0.65rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        color: #4a5a6a;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+    }
+    #whisperPage .wp-catalog-item:hover {
+        background: var(--color-4);
+        border-color: var(--color-5);
+    }
+    #whisperPage .wp-catalog-item.active {
+        background: linear-gradient(135deg, var(--color-1), var(--color-4));
+        border-color: var(--color-2);
+    }
+    #whisperPage .wp-catalog-item .ci-title {
+        flex: 1 1 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: left;
+    }
+    #whisperPage .wp-catalog-item .ci-page {
+        flex: 0 0 auto;
+        font-size: 0.7rem;
+        color: var(--color-3);
+        opacity: 0.8;
+        letter-spacing: 0.05em;
+    }
+
+    #whisperPage .wp-catalog-close {
+        margin-top: 0.7rem;
+        text-align: center;
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        color: var(--color-3);
+        cursor: pointer;
+        padding: 0.4rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    #whisperPage .wp-catalog-close:hover {
+        background: var(--color-1);
+        color: var(--color-5);
+    }
+</style>
+
+<script>
+(function () {
+    var STORAGE_KEY = 'whisper_data_v2';
+    var INITIAL_PAGES = 3;
+    var PIN_IMG = 'https://img.heliar.top/file/1772081928940_retouch_2026022423142267.jpg';
+    var LABELS       = ['· xk ·', '· zzh ·'];
+    var PLACEHOLDERS = ['说点什么呢……', '说点什么呢……'];
+
+    function init() {
+        var page = document.getElementById('whisperPage');
+        var book = document.getElementById('wpBook');
+        if (!page || !book) { setTimeout(init, 200); return; }
+
+        // 数据
+        var books = loadBooks();
+
+        // ---------- 重建两本日记 ----------
+        book.innerHTML = '';
+        for (var i = 0; i < 2; i++) {
+            book.appendChild(createDiaryEl(i));
+        }
+
+        // ---------- 克隆替换原按钮，清掉原监听 ----------
+        ['wpSave', 'wpBack'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            var fresh = el.cloneNode(true);
+            el.parentNode.replaceChild(fresh, el);
+            if (id === 'wpSave') {
+                fresh.addEventListener('click', function () {
+                    syncAll();
+                    saveBooks();
+                    toast('已保存 ♥');
+                });
+            } else {
+                fresh.addEventListener('click', function () {
+                    syncAll();
+                    saveBooks();
+                    page.classList.remove('show');
+                });
+            }
+        });
+
+        // 目录入口：清掉原监听，重新绑自己的
+        document.querySelectorAll('.catalog-item').forEach(function (item) {
+            if (item.getAttribute('data-title') === '悄悄话') {
+                var fresh = item.cloneNode(true);
+                item.parentNode.replaceChild(fresh, item);
+                fresh.addEventListener('click', function (ev) {
+                    ev.stopImmediatePropagation();
+                    var sub = document.getElementById('subpage');
+                    if (sub) sub.classList.remove('show');
+                    page.classList.add('show');
+                    renderAll();
+                });
+            }
+        });
+
+        // ---------- 首次渲染 ----------
+        renderAll();
+
+        // ============================================================
+        //  创建单本日记 DOM
+        // ============================================================
+        function createDiaryEl(idx) {
+            var d = document.createElement('div');
+            d.className = 'wp-diary';
+            d.setAttribute('data-book', idx);
+            d.innerHTML =
+                '<div class="wp-pin">' +
+                    '<img src="' + PIN_IMG + '" alt="pin">' +
+                '</div>' +
+                '<div class="wp-diary-label">' + LABELS[idx] + '</div>' +
+                '<div class="wp-text" contenteditable="true" ' +
+                     'data-placeholder="' + PLACEHOLDERS[idx] + '"></div>' +
+                '<div class="wp-footer">' +
+                    '<span class="wp-catalog-btn">☰ 目录</span>' +
+                    '<span class="wp-page-num">1 / 1</span>' +
+                    '<span class="wp-prev" title="上一页">←</span>' +
+                    '<span class="wp-next" title="下一页">→</span>' +
+                '</div>' +
+                '<div class="wp-catalog">' +
+                    '<div class="wp-catalog-title">目 录</div>' +
+                    '<div class="wp-catalog-list"></div>' +
+                    '<div class="wp-catalog-close">关 闭</div>' +
+                '</div>';
+
+            var textEl  = d.querySelector('.wp-text');
+            var prevEl  = d.querySelector('.wp-prev');
+            var nextEl  = d.querySelector('.wp-next');
+            var catBtn  = d.querySelector('.wp-catalog-btn');
+            var catBox  = d.querySelector('.wp-catalog');
+            var catClose= d.querySelector('.wp-catalog-close');
+
+            // 输入
+            textEl.addEventListener('input', function () {
+                books[idx].pages[books[idx].current].text = textEl.innerText;
+            });
+            textEl.addEventListener('paste', function (e) {
+                e.preventDefault();
+                var txt = (e.clipboardData || window.clipboardData).getData('text');
+                document.execCommand('insertText', false, txt);
+            });
+
+            // 上一页（到头就不动）
+            prevEl.addEventListener('click', function () {
+                syncBook(idx);
+                var b = books[idx];
+                if (b.current > 0) {
+                    b.current--;
+                    renderBook(idx);
+                }
+            });
+
+            // 下一页（到最后一页就自动加一页）
+            nextEl.addEventListener('click', function () {
+                syncBook(idx);
+                var b = books[idx];
+                if (b.current === b.pages.length - 1) {
+                    b.pages.push({ text: '' });
+                }
+                b.current++;
+                renderBook(idx);
+            });
+
+            // 目录
+            catBtn.addEventListener('click', function () {
+                syncBook(idx);
+                renderCatalog(idx);
+                catBox.classList.add('show');
+            });
+            catClose.addEventListener('click', function () {
+                catBox.classList.remove('show');
+            });
+
+            return d;
+        }
+
+        // ============================================================
+        //  渲染单本
+        // ============================================================
+        function renderBook(idx) {
+            var d = book.querySelector('.wp-diary[data-book="' + idx + '"]');
+            if (!d) return;
+            var b = books[idx];
+            if (b.current >= b.pages.length) b.current = 0;
+
+            d.querySelector('.wp-text').textContent = b.pages[b.current].text || '';
+            d.querySelector('.wp-page-num').textContent =
+                (b.current + 1) + ' / ' + b.pages.length;
+
+            // 目录开着的时候同步更新高亮
+            if (d.querySelector('.wp-catalog').classList.contains('show')) {
+                renderCatalog(idx);
+            }
+        }
+
+        function renderAll() {
+            renderBook(0);
+            renderBook(1);
+        }
+
+        // ============================================================
+        //  渲染目录
+        // ============================================================
+        function renderCatalog(idx) {
+            var d = book.querySelector('.wp-diary[data-book="' + idx + '"]');
+            if (!d) return;
+            var list = d.querySelector('.wp-catalog-list');
+            var b = books[idx];
+
+            list.innerHTML = '';
+            b.pages.forEach(function (p, i) {
+                var item = document.createElement('div');
+                item.className = 'wp-catalog-item' + (i === b.current ? ' active' : '');
+                item.innerHTML =
+                    '<span class="ci-title"></span>' +
+                    '<span class="ci-page">P ' + (i + 1) + ' / ' + b.pages.length + '</span>';
+                item.querySelector('.ci-title').textContent = getTitle(p.text);
+
+                item.addEventListener('click', function () {
+                    syncBook(idx);
+                    books[idx].current = i;
+                    renderBook(idx);
+                    d.querySelector('.wp-catalog').classList.remove('show');
+                });
+
+                list.appendChild(item);
+            });
+
+            // 目录底部的「新增一页」
+            var addItem = document.createElement('div');
+            addItem.className = 'wp-catalog-item';
+            addItem.style.opacity = '0.75';
+            addItem.innerHTML =
+                '<span class="ci-title">＋ 新增一页</span>' +
+                '<span class="ci-page">New</span>';
+            addItem.addEventListener('click', function () {
+                syncBook(idx);
+                books[idx].pages.push({ text: '' });
+                books[idx].current = books[idx].pages.length - 1;
+                renderBook(idx);
+                renderCatalog(idx);
+            });
+            list.appendChild(addItem);
+        }
+
+        // 目录条目标题：取正文第一行
+        function getTitle(text) {
+            if (!text) return '（空白页）';
+            var first = String(text).split('\n')[0].trim();
+            if (!first) return '（空白页）';
+            return first.length > 16 ? first.slice(0, 16) + '…' : first;
+        }
+
+        // ============================================================
+        //  同步 / 存储
+        // ============================================================
+        function syncBook(idx) {
+            var d = book.querySelector('.wp-diary[data-book="' + idx + '"]');
+            if (!d) return;
+            var textEl = d.querySelector('.wp-text');
+            books[idx].pages[books[idx].current].text = textEl.innerText;
+        }
+        function syncAll() { syncBook(0); syncBook(1); }
+
+        function loadBooks() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    var obj = JSON.parse(raw);
+                    if (obj && Array.isArray(obj.books) && obj.books.length === 2) {
+                        obj.books.forEach(function (b) {
+                            if (!Array.isArray(b.pages)) b.pages = newPages(INITIAL_PAGES);
+                            if (typeof b.current !== 'number' || b.current < 0) b.current = 0;
+                            b.pages.forEach(function (p) {
+                                if (typeof p.text !== 'string') p.text = '';
+                            });
+                        });
+                        return obj.books;
+                    }
+                }
+            } catch (e) {}
+            return [
+                { pages: newPages(INITIAL_PAGES), current: 0 },
+                { pages: newPages(INITIAL_PAGES), current: 0 }
+            ];
+        }
+
+        function newPages(n) {
+            var arr = [];
+            for (var i = 0; i < n; i++) arr.push({ text: '' });
+            return arr;
+        }
+
+        function saveBooks() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ books: books }));
+            } catch (e) {}
+        }
+
+        function toast(msg) {
+            var t = document.getElementById('wpToast');
+            if (!t) return;
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toast._t);
+            toast._t = setTimeout(function () {
+                t.classList.remove('show');
+            }, 1800);
+        }
+    }
+
+    setTimeout(init, 400);
+})();
+</script>
+<!-- ================= 一键导出备份（新增，粘在 </body> 之前） ================= -->
+<button id="exportBtn" style="
+  position:fixed;right:16px;bottom:16px;z-index:99999;
+  padding:10px 18px;border:none;border-radius:999px;
+  background:#5b8cff;color:#fff;font-size:14px;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);">💾 导出备份</button>
+
+<script>
+(function () {
+  var btn = document.getElementById('exportBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', function () {
+    // 1. 把 localStorage 里所有数据打包（不遗漏任何 key）
+    var backup = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      backup[key] = localStorage.getItem(key);
+    }
+
+    // 2. 封装成带版本和时间的备份对象
+    var payload = {
+      app: 'zzhxk',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data: backup
+    };
+
+    // 3. 转成 JSON 并下载
+    var json = JSON.stringify(payload, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url  = URL.createObjectURL(blob);
+
+    var d  = new Date();
+    var yy = d.getFullYear();
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    var hh = String(d.getHours()).padStart(2, '0');
+    var mi = String(d.getMinutes()).padStart(2, '0');
+    var name = '备份_' + yy + mm + dd + '_' + hh + mi + '.json';
+
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+
+    btn.textContent = '✅ 已导出';
+    setTimeout(function () { btn.textContent = '💾 导出备份'; }, 1500);
+  });
+})();
+</script>
+<!-- ================= 一键导入备份（新增，粘在导出按钮/脚本之后） ================= -->
+<button id="importBtn" style="
+  position:fixed;right:16px;bottom:68px;z-index:99999;
+  padding:10px 18px;border:none;border-radius:999px;
+  background:#3fbf7f;color:#fff;font-size:14px;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);">📥 导入备份</button>
+
+<script>
+(function () {
+  var btn = document.getElementById('importBtn');
+  if (!btn) return;
+
+  // 隐藏的文件选择框
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+
+  btn.addEventListener('click', function () {
+    input.value = '';      // 允许重复导入同一个文件
+    input.click();
+  });
+
+  input.addEventListener('change', function () {
+    var file = input.files && input.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var payload;
+      try {
+        payload = JSON.parse(ev.target.result);
+      } catch (e) {
+        alert('❌ 文件格式错误，无法解析为 JSON。');
+        return;
+      }
+
+      // 兼容标准导出的 {data:{...}} 结构；若没有 data 字段，就直接当作数据对象
+      var data = (payload && payload.data) ? payload.data : payload;
+      if (!data || typeof data !== 'object') {
+        alert('❌ 备份内容无效。');
+        return;
+      }
+
+      var keys = Object.keys(data);
+      if (keys.length === 0) {
+        alert('⚠️ 备份文件里没有任何数据。');
+        return;
+      }
+
+      // 二次确认，避免误覆盖
+      if (!confirm('即将导入 ' + keys.length + ' 项数据，并覆盖当前全部本地数据。\n确定继续吗？')) {
+        return;
+      }
+
+      try {
+        // 清空现有数据后写入备份（保证与备份完全一致）
+        localStorage.clear();
+        for (var i = 0; i < keys.length; i++) {
+          var k = keys[i];
+          var v = data[k];
+          // 导出时统一存成字符串，这里原样写回
+          if (typeof v !== 'string') v = JSON.stringify(v);
+          localStorage.setItem(k, v);
+        }
+      } catch (e) {
+        alert('❌ 导入失败：' + e.message + '\n（可能本地存储空间不足）');
+        return;
+      }
+
+      btn.textContent = '✅ 导入完成';
+      setTimeout(function () { btn.textContent = '📥 导入备份'; }, 1500);
+
+      // 刷新页面，让各模块重新读取新数据并渲染
+      setTimeout(function () { location.reload(); }, 600);
+    };
+
+    reader.readAsText(file);
+  });
+})();
+</script>
+<!-- ================= 圆形音乐播放器（新增，粘在 </body> 之前） ================= -->
+<style>
+  #musicBtn {
+    position: fixed;
+    top: 2rem;                 /* 与返回按钮同高 */
+    left: 9.5rem;              /* 返回按钮右侧 */
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;             /* 默认隐藏，进入主界面后显示 */
+    align-items: center;
+    justify-content: center;
+    /* 蓝粉渐变 */
+    background: linear-gradient(135deg, #7fb8ff 0%, #b8d4ff 40%, #ffc0e0 100%);
+    box-shadow: 0 4px 16px rgba(128, 178, 229, 0.55),
+                0 0 0 3px rgba(255, 255, 255, 0.65) inset;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #musicBtn.show { display: flex; }
+  #musicBtn:active { transform: scale(0.92); }
+
+  /* 圆形内的音符 */
+  #musicBtn .music-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    pointer-events: none;
+    filter: drop-shadow(0 1px 1px rgba(90,120,160,.4));
+  }
+
+  /* 播放时整圈缓慢旋转（音乐符号自身也转） */
+  #musicBtn.playing {
+    animation: spinDisc 4s linear infinite;
+    box-shadow: 0 4px 20px rgba(255, 150, 200, 0.65),
+                0 0 0 3px rgba(255, 255, 255, 0.7) inset;
+  }
+  @keyframes spinDisc {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* 手机适配：跟返回按钮一起移到左上角 1rem */
+  @media (max-width: 600px) {
+    #musicBtn {
+      top: 1rem;
+      left: 6.6rem;
+      width: 44px;
+      height: 44px;
+    }
+    #musicBtn .music-icon { width: 20px; height: 20px; }
+  }
+</style>
+
+<button id="musicBtn" aria-label="播放/暂停音乐" title="播放/暂停">
+  <!-- 音符图标（SVG） -->
+  <svg class="music-icon" viewBox="0 0 24 24" fill="none"
+       xmlns="http://www.w3.org/2000/svg">
+    <path d="M9 18V6l10-2v11" stroke="#fff" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6.5" cy="18" r="2.8" fill="#fff"/>
+    <circle cx="16.5" cy="15" r="2.8" fill="#fff"/>
+  </svg>
+</button>
+
+<audio id="bgMusic" loop preload="none"
+       src="https://larsss1019.github.io/mc/%E6%9E%97%E4%BF%8A%E6%9D%B0%20-%20%E5%86%BB%E7%BB%93MP3%E5%85%8D%E8%B4%B9%E4%B8%8B%E8%BD%BD%2C%E5%86%BB%E7%BB%93LRC%E5%8A%A8%E6%80%81%E6%AD%8C%E8%AF%8D%E4%B8%8B%E8%BD%BD-AAE%E9%9F%B3%E4%B9%90%E7%BD%91_648757902.mp3"></audio>
+
+<script>
+(function () {
+  var btn   = document.getElementById('musicBtn');
+  var audio = document.getElementById('bgMusic');
+  if (!btn || !audio) return;
+
+  // 点击：切换播放/暂停
+  btn.addEventListener('click', function () {
+    if (audio.paused) {
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () {});
+      btn.classList.add('playing');
+      btn.setAttribute('title', '暂停');
+    } else {
+      audio.pause();
+      btn.classList.remove('playing');
+      btn.setAttribute('title', '播放');
+    }
+  });
+
+  // 失焦/暂停等状态同步（防止状态不一致）
+  audio.addEventListener('pause', function () { btn.classList.remove('playing'); });
+  audio.addEventListener('play',  function () { btn.classList.add('playing'); });
+
+  // 跟随返回按钮的显示逻辑：返回按钮出现时，音乐按钮也出现
+  var backBtn = document.getElementById('backBtn');
+  if (backBtn) {
+    var sync = function () {
+      if (backBtn.classList.contains('show')) btn.classList.add('show');
+      else {
+        btn.classList.remove('show');
+        // 返回开屏时自动暂停（可选，不需要可删这两行）
+        if (!audio.paused) { audio.pause(); }
+      }
+    };
+    // 监听 class 变化
+    if (window.MutationObserver) {
+      new MutationObserver(sync).observe(backBtn, { attributes: true, attributeFilter: ['class'] });
+    }
+    sync();
+  } else {
+    btn.classList.add('show'); // 找不到返回按钮就常显
+  }
+})();
+</script>
+</body>
+</html>
