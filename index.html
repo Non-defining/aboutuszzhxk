@@ -5229,5 +5229,258 @@
     setTimeout(init, 400);
 })();
 </script>
+<!-- ================= 一键导出备份（新增，粘在 </body> 之前） ================= -->
+<button id="exportBtn" style="
+  position:fixed;right:16px;bottom:16px;z-index:99999;
+  padding:10px 18px;border:none;border-radius:999px;
+  background:#5b8cff;color:#fff;font-size:14px;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);">💾 导出备份</button>
+
+<script>
+(function () {
+  var btn = document.getElementById('exportBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', function () {
+    // 1. 把 localStorage 里所有数据打包（不遗漏任何 key）
+    var backup = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      backup[key] = localStorage.getItem(key);
+    }
+
+    // 2. 封装成带版本和时间的备份对象
+    var payload = {
+      app: 'zzhxk',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      data: backup
+    };
+
+    // 3. 转成 JSON 并下载
+    var json = JSON.stringify(payload, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    var url  = URL.createObjectURL(blob);
+
+    var d  = new Date();
+    var yy = d.getFullYear();
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    var hh = String(d.getHours()).padStart(2, '0');
+    var mi = String(d.getMinutes()).padStart(2, '0');
+    var name = '备份_' + yy + mm + dd + '_' + hh + mi + '.json';
+
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+
+    btn.textContent = '✅ 已导出';
+    setTimeout(function () { btn.textContent = '💾 导出备份'; }, 1500);
+  });
+})();
+</script>
+<!-- ================= 一键导入备份（新增，粘在导出按钮/脚本之后） ================= -->
+<button id="importBtn" style="
+  position:fixed;right:16px;bottom:68px;z-index:99999;
+  padding:10px 18px;border:none;border-radius:999px;
+  background:#3fbf7f;color:#fff;font-size:14px;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);">📥 导入备份</button>
+
+<script>
+(function () {
+  var btn = document.getElementById('importBtn');
+  if (!btn) return;
+
+  // 隐藏的文件选择框
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+
+  btn.addEventListener('click', function () {
+    input.value = '';      // 允许重复导入同一个文件
+    input.click();
+  });
+
+  input.addEventListener('change', function () {
+    var file = input.files && input.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var payload;
+      try {
+        payload = JSON.parse(ev.target.result);
+      } catch (e) {
+        alert('❌ 文件格式错误，无法解析为 JSON。');
+        return;
+      }
+
+      // 兼容标准导出的 {data:{...}} 结构；若没有 data 字段，就直接当作数据对象
+      var data = (payload && payload.data) ? payload.data : payload;
+      if (!data || typeof data !== 'object') {
+        alert('❌ 备份内容无效。');
+        return;
+      }
+
+      var keys = Object.keys(data);
+      if (keys.length === 0) {
+        alert('⚠️ 备份文件里没有任何数据。');
+        return;
+      }
+
+      // 二次确认，避免误覆盖
+      if (!confirm('即将导入 ' + keys.length + ' 项数据，并覆盖当前全部本地数据。\n确定继续吗？')) {
+        return;
+      }
+
+      try {
+        // 清空现有数据后写入备份（保证与备份完全一致）
+        localStorage.clear();
+        for (var i = 0; i < keys.length; i++) {
+          var k = keys[i];
+          var v = data[k];
+          // 导出时统一存成字符串，这里原样写回
+          if (typeof v !== 'string') v = JSON.stringify(v);
+          localStorage.setItem(k, v);
+        }
+      } catch (e) {
+        alert('❌ 导入失败：' + e.message + '\n（可能本地存储空间不足）');
+        return;
+      }
+
+      btn.textContent = '✅ 导入完成';
+      setTimeout(function () { btn.textContent = '📥 导入备份'; }, 1500);
+
+      // 刷新页面，让各模块重新读取新数据并渲染
+      setTimeout(function () { location.reload(); }, 600);
+    };
+
+    reader.readAsText(file);
+  });
+})();
+</script>
+<!-- ================= 圆形音乐播放器（新增，粘在 </body> 之前） ================= -->
+<style>
+  #musicBtn {
+    position: fixed;
+    top: 2rem;                 /* 与返回按钮同高 */
+    left: 9.5rem;              /* 返回按钮右侧 */
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;             /* 默认隐藏，进入主界面后显示 */
+    align-items: center;
+    justify-content: center;
+    /* 蓝粉渐变 */
+    background: linear-gradient(135deg, #7fb8ff 0%, #b8d4ff 40%, #ffc0e0 100%);
+    box-shadow: 0 4px 16px rgba(128, 178, 229, 0.55),
+                0 0 0 3px rgba(255, 255, 255, 0.65) inset;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #musicBtn.show { display: flex; }
+  #musicBtn:active { transform: scale(0.92); }
+
+  /* 圆形内的音符 */
+  #musicBtn .music-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    pointer-events: none;
+    filter: drop-shadow(0 1px 1px rgba(90,120,160,.4));
+  }
+
+  /* 播放时整圈缓慢旋转（音乐符号自身也转） */
+  #musicBtn.playing {
+    animation: spinDisc 4s linear infinite;
+    box-shadow: 0 4px 20px rgba(255, 150, 200, 0.65),
+                0 0 0 3px rgba(255, 255, 255, 0.7) inset;
+  }
+  @keyframes spinDisc {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* 手机适配：跟返回按钮一起移到左上角 1rem */
+  @media (max-width: 600px) {
+    #musicBtn {
+      top: 1rem;
+      left: 6.6rem;
+      width: 44px;
+      height: 44px;
+    }
+    #musicBtn .music-icon { width: 20px; height: 20px; }
+  }
+</style>
+
+<button id="musicBtn" aria-label="播放/暂停音乐" title="播放/暂停">
+  <!-- 音符图标（SVG） -->
+  <svg class="music-icon" viewBox="0 0 24 24" fill="none"
+       xmlns="http://www.w3.org/2000/svg">
+    <path d="M9 18V6l10-2v11" stroke="#fff" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6.5" cy="18" r="2.8" fill="#fff"/>
+    <circle cx="16.5" cy="15" r="2.8" fill="#fff"/>
+  </svg>
+</button>
+
+<audio id="bgMusic" loop preload="none"
+       src="https://larsss1019.github.io/mc/%E6%9E%97%E4%BF%8A%E6%9D%B0%20-%20%E5%86%BB%E7%BB%93MP3%E5%85%8D%E8%B4%B9%E4%B8%8B%E8%BD%BD%2C%E5%86%BB%E7%BB%93LRC%E5%8A%A8%E6%80%81%E6%AD%8C%E8%AF%8D%E4%B8%8B%E8%BD%BD-AAE%E9%9F%B3%E4%B9%90%E7%BD%91_648757902.mp3"></audio>
+
+<script>
+(function () {
+  var btn   = document.getElementById('musicBtn');
+  var audio = document.getElementById('bgMusic');
+  if (!btn || !audio) return;
+
+  // 点击：切换播放/暂停
+  btn.addEventListener('click', function () {
+    if (audio.paused) {
+      var p = audio.play();
+      if (p && p.catch) p.catch(function () {});
+      btn.classList.add('playing');
+      btn.setAttribute('title', '暂停');
+    } else {
+      audio.pause();
+      btn.classList.remove('playing');
+      btn.setAttribute('title', '播放');
+    }
+  });
+
+  // 失焦/暂停等状态同步（防止状态不一致）
+  audio.addEventListener('pause', function () { btn.classList.remove('playing'); });
+  audio.addEventListener('play',  function () { btn.classList.add('playing'); });
+
+  // 跟随返回按钮的显示逻辑：返回按钮出现时，音乐按钮也出现
+  var backBtn = document.getElementById('backBtn');
+  if (backBtn) {
+    var sync = function () {
+      if (backBtn.classList.contains('show')) btn.classList.add('show');
+      else {
+        btn.classList.remove('show');
+        // 返回开屏时自动暂停（可选，不需要可删这两行）
+        if (!audio.paused) { audio.pause(); }
+      }
+    };
+    // 监听 class 变化
+    if (window.MutationObserver) {
+      new MutationObserver(sync).observe(backBtn, { attributes: true, attributeFilter: ['class'] });
+    }
+    sync();
+  } else {
+    btn.classList.add('show'); // 找不到返回按钮就常显
+  }
+})();
+</script>
 </body>
 </html>
